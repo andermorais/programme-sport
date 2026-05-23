@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Programme">
+<meta name="theme-color" content="#0E0F11">
+<title>Programme — Genou & Renforcement</title>
+<style>
+/* ============================================================
+   RESET & TOKENS
+   ============================================================ */
+*, *::before, *::after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+}
+
+:root {
+  /* Surface */
+  --bg: #F6F3EC;
+  --bg-2: #EFEBE2;
+  --surface: #FFFFFF;
+  --surface-2: #FAF7F0;
+  --line: rgba(14, 15, 17, 0.08);
+  --line-strong: rgba(14, 15, 17, 0.14);
+
+  /* Text */
+  --ink: #0E0F11;
+  --ink-2: #3D3F45;
+  --ink-3: #74767D;
+  --ink-4: #A6A8AE;
+
+  /* Accents par bloc */
+  --a: #E25C3A;          /* Bloc A — étirements / kiné, warm coral */
+  --a-soft: #FBEADF;
+  --a-tint: #FFF6EE;
+  --b: #1F8A5B;          /* Bloc B — renforcement, deep green */
+  --b-soft: #DCEEDF;
+  --b-tint: #F1F8EF;
+  --c: #2A4FBD;          /* Bloc C — musculation, indigo */
+  --c-soft: #DDE3F5;
+  --c-tint: #EEF1FA;
+
+  /* Phases */
+  --p1: #6B7280;         /* réactivation, neutre */
+  --p2: #2A4FBD;         /* progressif, indigo */
+  --p3: #C0392B;         /* full charge, brique */
+
+  /* Feedback */
+  --done: #1F8A5B;
+  --done-tint: #E7F4EC;
+  --warn: #C0392B;
+  --rpe: #B8821F;
+  --rpe-tint: #FBEFCD;
+
+  /* Radii & shadows */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 26px;
+  --shadow-sm: 0 1px 2px rgba(14,15,17,.04), 0 1px 3px rgba(14,15,17,.04);
+  --shadow-md: 0 2px 6px rgba(14,15,17,.05), 0 8px 24px rgba(14,15,17,.06);
+
+  /* Touch */
+  --touch: 44px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  overflow-x: hidden;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Number font — tabular for stats */
+.num, .stat-chip, .pct, .count, .week-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  padding: calc(env(safe-area-inset-top) + 18px) 22px 18px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink-3);
+  margin-bottom: 14px;
+}
+
+.hero-top .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  display: inline-block;
+  vertical-align: 1px;
+  margin-right: 8px;
+}
+
+.hero-title {
+  font-size: 38px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  margin: 0;
+  color: var(--ink);
+}
+
+.hero-title em {
+  font-style: normal;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.hero-sub {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--ink-3);
+  max-width: 38ch;
+}
+
+/* Phase + progress strip */
+.hero-strip {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.phase-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px 7px 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+.phase-pill .swatch {
+  width: 14px; height: 14px;
+  border-radius: 999px;
+  background: var(--p1);
+  display: inline-block;
+  flex: 0 0 auto;
+}
+.phase-pill[data-phase="2"] .swatch { background: var(--p2); }
+.phase-pill[data-phase="3"] .swatch { background: var(--p3); }
+.phase-pill .label { color: var(--ink-3); margin-right: 2px; }
+
+.overall {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.overall .pct {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+/* Week selector — 6 segments */
+.weeks {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+.week-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  height: 44px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  line-height: 1;
+  transition: background .15s, border-color .15s, color .15s, transform .1s;
+}
+.week-btn .week-num { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+.week-btn .week-lab { font-size: 9px; color: var(--ink-4); letter-spacing: 0.06em; text-transform: uppercase; }
+.week-btn:active { transform: scale(0.97); }
+.week-btn[data-phase="1"].active { background: var(--p1); border-color: var(--p1); color: #fff; }
+.week-btn[data-phase="2"].active { background: var(--p2); border-color: var(--p2); color: #fff; }
+.week-btn[data-phase="3"].active { background: var(--p3); border-color: var(--p3); color: #fff; }
+.week-btn.active .week-lab { color: rgba(255,255,255,0.75); }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tab-radio { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+
+.tabs {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(246, 243, 236, 0.88);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs-inner {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 10px 14px;
+  gap: 6px;
+}
+.tabs-inner::-webkit-scrollbar { display: none; }
+
+.tab-label {
+  flex: 0 0 auto;
+  min-height: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-3);
+  background: transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  white-space: nowrap;
+  transition: color .15s, background .15s, border-color .15s;
+}
+.tab-label .tab-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ink-4);
+  flex: 0 0 auto;
+}
+.tab-label[for="tab2"] .tab-dot { background: var(--a); }
+.tab-label[for="tab3"] .tab-dot { background: var(--b); }
+.tab-label[for="tab4"] .tab-dot { background: var(--c); }
+.tab-label[for="tab1"] .tab-dot { background: var(--ink); }
+.tab-label[for="tab5"] .tab-dot { background: var(--ink); }
+.tab-label:active { background: var(--bg-2); }
+
+#tab1:checked ~ .tabs .tab-label[for="tab1"],
+#tab2:checked ~ .tabs .tab-label[for="tab2"],
+#tab3:checked ~ .tabs .tab-label[for="tab3"],
+#tab4:checked ~ .tabs .tab-label[for="tab4"],
+#tab5:checked ~ .tabs .tab-label[for="tab5"] {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+#tab1:checked ~ .tabs .tab-label[for="tab1"] .tab-dot,
+#tab2:checked ~ .tabs .tab-label[for="tab2"] .tab-dot,
+#tab3:checked ~ .tabs .tab-label[for="tab3"] .tab-dot,
+#tab4:checked ~ .tabs .tab-label[for="tab4"] .tab-dot,
+#tab5:checked ~ .tabs .tab-label[for="tab5"] .tab-dot {
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+}
+
+.tab-panel { display: none; }
+#tab1:checked ~ .content #panel1,
+#tab2:checked ~ .content #panel2,
+#tab3:checked ~ .content #panel3,
+#tab4:checked ~ .content #panel4,
+#tab5:checked ~ .content #panel5 {
+  display: block;
+  -webkit-animation: fadein .25s ease;
+  animation: fadein .25s ease;
+}
+
+@-webkit-keyframes fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   CONTENT BASE
+   ============================================================ */
+.content {
+  padding: 18px 16px calc(env(safe-area-inset-bottom) + 80px);
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+h2.section {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 8px 0 4px;
+  color: var(--ink);
+}
+.section-sub {
+  font-size: 14px;
+  color: var(--ink-3);
+  margin: 0 0 18px;
+}
+
+h3.group {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 22px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h3.group::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+p { margin: 0 0 12px; font-size: 15px; color: var(--ink-2); }
+p strong { color: var(--ink); font-weight: 600; }
+ul { margin: 0 0 14px; padding-left: 18px; }
+li { margin-bottom: 6px; font-size: 15px; color: var(--ink-2); }
+li strong { color: var(--ink); font-weight: 600; }
+
+/* ============================================================
+   BLOCK CARDS (Vue d'ensemble)
+   ============================================================ */
+.block-card {
+  position: relative;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  margin: 0 0 12px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  overflow: hidden;
+}
+.block-card .glyph {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.block-card[data-block="A"] .glyph { background: var(--a-soft); color: var(--a); }
+.block-card[data-block="B"] .glyph { background: var(--b-soft); color: var(--b); }
+.block-card[data-block="C"] .glyph { background: var(--c-soft); color: var(--c); }
+.block-card .body { flex: 1; min-width: 0; }
+.block-card .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.block-card[data-block="A"] .eyebrow { color: var(--a); }
+.block-card[data-block="B"] .eyebrow { color: var(--b); }
+.block-card[data-block="C"] .eyebrow { color: var(--c); }
+.block-card .title {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.block-card .meta {
+  font-size: 14px;
+  color: var(--ink-3);
+  margin: 0;
+}
+.block-card .meta strong { color: var(--ink); }
+.block-card .arrow {
+  position: absolute;
+  top: 18px; right: 18px;
+  color: var(--ink-4);
+}
+
+/* Banner / callout */
+.callout {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  margin: 12px 0;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.callout.a { background: var(--a-tint); border-color: rgba(226,92,58,0.18); }
+.callout.b { background: var(--b-tint); border-color: rgba(31,138,91,0.18); }
+.callout.c { background: var(--c-tint); border-color: rgba(42,79,189,0.18); }
+
+.callout .c-title {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.callout.a .c-title { color: var(--a); }
+.callout.b .c-title { color: var(--b); }
+.callout.c .c-title { color: var(--c); }
+.callout p, .callout li { font-size: 14px; }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+
+/* ============================================================
+   PROGRESS BAR — per session
+   ============================================================ */
+.progress {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  margin: 10px 0 14px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.progress .count {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  min-width: 44px;
+}
+.progress .count .of {
+  color: var(--ink-3);
+  font-weight: 600;
+}
+.progress .track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-2);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+.progress .fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: var(--ink);
+  transition: width .35s cubic-bezier(.2,.7,.2,1), background .25s;
+}
+.progress[data-tone="a"] .fill { background: var(--a); }
+.progress[data-tone="b"] .fill { background: var(--b); }
+.progress[data-tone="c"] .fill { background: var(--c); }
+.progress[data-tone="warm"] .fill { background: var(--ink-2); }
+.progress.done .fill { background: var(--done) !important; }
+
+.reset-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--ink-3);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: 0.02em;
+}
+.reset-btn:active { background: var(--bg-2); }
+.reset-btn svg { width: 13px; height: 13px; }
+
+/* ============================================================
+   EXERCISE CARDS
+   ============================================================ */
+.exo-list { display: grid; gap: 8px; }
+
+.exo {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px 14px 14px;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: transform .12s cubic-bezier(.2,.7,.2,1), background .25s, border-color .25s;
+  overflow: hidden;
+}
+.exo::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: transparent;
+  transition: background .2s;
+}
+.exo[data-tone="a"]::before { background: var(--a); }
+.exo[data-tone="b"]::before { background: var(--b); }
+.exo[data-tone="c"]::before { background: var(--c); }
+
+.exo:active { transform: scale(0.985); }
+
+/* Checkbox */
+.check {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid var(--ink-4);
+  background: transparent;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  transition: background .25s cubic-bezier(.2,.7,.2,1),
+              border-color .25s,
+              transform .25s cubic-bezier(.5,1.6,.5,1);
+}
+.check svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+.check svg path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 22;
+  stroke-dashoffset: 22;
+  transition: stroke-dashoffset .28s cubic-bezier(.5,1.4,.5,1) .05s;
+}
+
+.exo.done .check {
+  background: var(--done);
+  border-color: var(--done);
+  transform: scale(1.08);
+  -webkit-animation: pop .35s cubic-bezier(.4,1.4,.4,1);
+  animation: pop .35s cubic-bezier(.4,1.4,.4,1);
+}
+.exo[data-tone="a"].done .check { background: var(--a); border-color: var(--a); }
+.exo[data-tone="b"].done .check { background: var(--b); border-color: var(--b); }
+.exo[data-tone="c"].done .check { background: var(--c); border-color: var(--c); }
+.exo.done .check svg path { stroke-dashoffset: 0; }
+
+@-webkit-keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+  100% { transform: scale(1.08); }
+}
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+  100% { transform: scale(1.08); }
+}
+
+.exo.done {
+  background: var(--surface-2);
+}
+.exo[data-tone="a"].done { background: var(--a-tint); }
+.exo[data-tone="b"].done { background: var(--b-tint); }
+.exo[data-tone="c"].done { background: var(--c-tint); }
+
+.exo-body { flex: 1; min-width: 0; }
+
+.exo-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  margin: 0 0 8px;
+  line-height: 1.25;
+  transition: color .25s;
+  word-wrap: break-word;
+  text-wrap: balance;
+}
+.exo.done .exo-name {
+  color: var(--ink-3);
+  text-decoration: line-through;
+  -webkit-text-decoration-color: var(--ink-4);
+  text-decoration-color: var(--ink-4);
+}
+
+.exo-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0 0 8px;
+}
+
+.stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px 4px 7px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+.stat-chip svg {
+  width: 11px;
+  height: 11px;
+  opacity: 0.7;
+  flex: 0 0 auto;
+}
+.stat-chip.rpe { background: var(--rpe-tint); color: var(--rpe); }
+.stat-chip.rpe svg { opacity: 0.9; }
+.stat-chip.tone-a { background: var(--a-soft); color: #B8421F; }
+.stat-chip.tone-b { background: var(--b-soft); color: #136C44; }
+.stat-chip.tone-c { background: var(--c-soft); color: #1E3A91; }
+
+.exo-notes {
+  font-size: 13px;
+  color: var(--ink-3);
+  line-height: 1.5;
+  margin: 0;
+}
+.exo-notes strong { color: var(--ink-2); font-weight: 600; }
+.exo.done .exo-notes { color: var(--ink-4); }
+
+/* ============================================================
+   PHASE CARDS (Bloc C)
+   ============================================================ */
+.phase {
+  position: relative;
+  margin: 22px 0;
+  padding: 18px 16px 16px;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.phase-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.phase-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: var(--p1);
+}
+.phase[data-phase="2"] .phase-badge { background: var(--p2); }
+.phase[data-phase="3"] .phase-badge { background: var(--p3); }
+.phase-weeks {
+  font-size: 12px;
+  color: var(--ink-3);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.phase-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 8px 0 4px;
+}
+.phase-desc {
+  font-size: 14px;
+  color: var(--ink-3);
+  margin: 0 0 10px;
+}
+
+.session-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 18px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.session-title .pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: var(--bg-2);
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   WEEK TABLE
+   ============================================================ */
+.week-table {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin: 12px 0 18px;
+}
+.week-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.week-row:last-child { border-bottom: none; }
+.week-row.head {
+  background: var(--bg-2);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-3);
+  padding: 10px 16px;
+}
+.week-day {
+  flex: 0 0 36%;
+  font-weight: 700;
+  color: var(--ink);
+}
+.week-day .dur {
+  display: block;
+  margin-top: 2px;
+  font-weight: 500;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.week-content { flex: 1; color: var(--ink-2); }
+.week-content strong { color: var(--ink); font-weight: 600; }
+
+/* ============================================================
+   QUICK JUMP
+   ============================================================ */
+.quick-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 8px;
+}
+.quick-jump label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  min-height: var(--touch);
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+.quick-jump label:active { background: var(--bg-2); transform: scale(0.985); }
+.quick-jump label svg { width: 14px; height: 14px; color: var(--ink-3); }
+
+/* ============================================================
+   DANGER BUTTON
+   ============================================================ */
+.danger {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid rgba(192, 57, 43, 0.25);
+  background: #fff;
+  color: var(--warn);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  min-height: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.danger:active { background: #FFF3F0; }
+
+/* ============================================================
+   LAST-SAVE INDICATOR
+   ============================================================ */
+.last-save {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.last-save::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 999px;
+  background: var(--done);
+  box-shadow: 0 0 0 3px rgba(31,138,91,0.18);
+  flex: 0 0 auto;
+  -webkit-animation: pulse 2s ease-in-out infinite;
+  animation: pulse 2s ease-in-out infinite;
+}
+@-webkit-keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.last-save.flash {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ============================================================
+   EXPORT / IMPORT
+   ============================================================ */
+.save-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+.save-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  padding: 0 16px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  min-height: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 140px;
+  transition: transform .1s, background .15s;
+}
+.save-btn:active { transform: scale(0.98); }
+.save-btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.save-btn.ghost:active { background: var(--bg-2); }
+.save-btn svg {
+  width: 14px; height: 14px;
+  flex: 0 0 auto;
+}
+
+.save-code {
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--ink);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  word-break: break-all;
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: 4px;
+}
+.save-code:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+  background: var(--surface);
+}
+.save-sep {
+  border: 0;
+  border-top: 1px dashed var(--line);
+  margin: 18px 0 10px;
+}
+.save-status {
+  font-size: 13px;
+  margin: 8px 0 0;
+  min-height: 1.2em;
+  color: var(--ink-3);
+  font-weight: 600;
+}
+.save-status.ok    { color: var(--done); }
+.save-status.err   { color: var(--warn); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  margin-top: 28px;
+  padding: 18px 0 0;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+/* ============================================================
+   DESKTOP
+   ============================================================ */
+@media (min-width: 720px) {
+  .hero { padding: 32px 36px 26px; }
+  .hero-title { font-size: 56px; }
+  .hero-sub { font-size: 16px; }
+  .tabs-inner { padding: 12px 28px; }
+  .content { padding: 28px 32px 80px; }
+  h2.section { font-size: 36px; }
+  .block-card .title { font-size: 22px; }
+  .block-card .glyph { width: 64px; height: 64px; font-size: 26px; flex: 0 0 64px; }
+  .exo-name { font-size: 17px; }
+  .phase-title { font-size: 26px; }
+}
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0E0F11;
+    --bg-2: #17181B;
+    --surface: #18191C;
+    --surface-2: #1E2024;
+    --line: rgba(255,255,255,0.07);
+    --line-strong: rgba(255,255,255,0.12);
+    --ink: #F4F4F5;
+    --ink-2: #C9C9CD;
+    --ink-3: #8A8B91;
+    --ink-4: #5C5D63;
+
+    --a: #FF7B52;
+    --a-soft: rgba(255,123,82,0.16);
+    --a-tint: rgba(255,123,82,0.08);
+    --b: #3FCB87;
+    --b-soft: rgba(63,203,135,0.16);
+    --b-tint: rgba(63,203,135,0.07);
+    --c: #6E8AF3;
+    --c-soft: rgba(110,138,243,0.16);
+    --c-tint: rgba(110,138,243,0.07);
+
+    --p1: #8A8B91;
+    --p2: #6E8AF3;
+    --p3: #E5635A;
+
+    --done: #3FCB87;
+    --done-tint: rgba(63,203,135,0.12);
+    --rpe: #E2B459;
+    --rpe-tint: rgba(226,180,89,0.14);
+  }
+  body { background: var(--bg); }
+  .tabs { background: rgba(14,15,17,0.78); }
+  .stat-chip.tone-a { color: #FFA98B; }
+  .stat-chip.tone-b { color: #74E0AB; }
+  .stat-chip.tone-c { color: #A0B6F7; }
+  .danger { background: var(--surface); color: #FF7060; border-color: rgba(255,112,96,0.3); }
+  .danger:active { background: rgba(255,112,96,0.1); }
+  .save-btn { background: #F4F4F5; color: #0E0F11; border-color: #F4F4F5; }
+  .save-btn.ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+  .save-code { background: #0A0B0D; border-color: var(--line-strong); }
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+  .tabs, .progress, .quick-jump, .reset-btn, .danger, .weeks, .save-row, .save-code, .save-sep, .save-status, .last-save { display: none !important; }
+  .tab-panel { display: block !important; page-break-after: always; }
+  .hero { padding: 0 0 16px; }
+  .exo { break-inside: avoid; }
+  body { background: #fff; color: #000; }
+}
+</style>
+</head>
+<body>
+
+<input type="radio" name="tabs" id="tab1" class="tab-radio" checked>
+<input type="radio" name="tabs" id="tab2" class="tab-radio">
+<input type="radio" name="tabs" id="tab3" class="tab-radio">
+<input type="radio" name="tabs" id="tab4" class="tab-radio">
+<input type="radio" name="tabs" id="tab5" class="tab-radio">
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero" data-screen-label="Hero">
+  <div class="hero-top">
+    <span><span class="dot"></span>Programme · 6 semaines</span>
+    <span id="todayLabel"></span>
+  </div>
+  <h1 class="hero-title">Reprise<br><em>Genou &amp; hanche</em></h1>
+  <p class="hero-sub">Trois blocs complémentaires — étirements, renforcement ciblé, musculation progressive.</p>
+
+  <div class="hero-strip">
+    <span class="phase-pill" data-phase="1" id="phasePill">
+      <span class="swatch"></span>
+      <span class="label">Phase</span>
+      <span id="phaseLabel">1 · Réactivation</span>
+    </span>
+    <span class="overall"><span class="pct" id="overallPct">0%</span> complété</span>
+  </div>
+
+  <span class="last-save" id="lastSave" aria-live="polite" role="status">Sauvegarde locale prête</span>
+
+  <div class="weeks" id="weekSelector" role="tablist" aria-label="Semaine du programme">
+    <button class="week-btn" data-week="1" data-phase="1"><span class="week-num">1</span><span class="week-lab">S1</span></button>
+    <button class="week-btn" data-week="2" data-phase="1"><span class="week-num">2</span><span class="week-lab">S2</span></button>
+    <button class="week-btn" data-week="3" data-phase="2"><span class="week-num">3</span><span class="week-lab">S3</span></button>
+    <button class="week-btn" data-week="4" data-phase="2"><span class="week-num">4</span><span class="week-lab">S4</span></button>
+    <button class="week-btn" data-week="5" data-phase="3"><span class="week-num">5</span><span class="week-lab">S5</span></button>
+    <button class="week-btn" data-week="6" data-phase="3"><span class="week-num">6</span><span class="week-lab">S6</span></button>
+  </div>
+</header>
+
+<!-- ============================================================
+     TABS
+     ============================================================ -->
+<nav class="tabs">
+  <div class="tabs-inner">
+    <label class="tab-label" for="tab1"><span class="tab-dot"></span>Vue d'ensemble</label>
+    <label class="tab-label" for="tab2"><span class="tab-dot"></span>Bloc A · Étirements</label>
+    <label class="tab-label" for="tab3"><span class="tab-dot"></span>Bloc B · Renforcement</label>
+    <label class="tab-label" for="tab4"><span class="tab-dot"></span>Bloc C · Musculation</label>
+    <label class="tab-label" for="tab5"><span class="tab-dot"></span>Suivi</label>
+  </div>
+</nav>
+
+<!-- ============================================================
+     SVG ICON DEFS — réutilisés via <use>
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-sets" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 8h2v8H4zM18 8h2v8h-2zM8 6v12M16 6v12M9 12h6"/>
+    </symbol>
+    <symbol id="i-reps" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/>
+    </symbol>
+    <symbol id="i-rest" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 7v5l3 2"/>
+    </symbol>
+    <symbol id="i-rpe" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 18a9 9 0 0 1 18 0M12 18l5-6"/>
+    </symbol>
+    <symbol id="i-time" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 8v4l3 2"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M5 13l5 5 9-11"/>
+    </symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/>
+    </symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main class="content">
+
+  <!-- ============================================================
+       PANEL 1 — VUE D'ENSEMBLE
+       ============================================================ -->
+  <section id="panel1" class="tab-panel" data-screen-label="01 Vue d'ensemble">
+    <h2 class="section">Vue d'ensemble</h2>
+    <p class="section-sub">Trois blocs complémentaires, un objectif : reprendre proprement.</p>
+
+    <div class="block-card" data-block="A">
+      <div class="glyph">A</div>
+      <div class="body">
+        <div class="eyebrow">Bloc A · Étirements</div>
+        <div class="title">Kiné quotidien</div>
+        <p class="meta"><strong>Quotidien</strong>, y compris jours de repos · ~15 min</p>
+      </div>
+      <span class="arrow"><svg width="18" height="18"><use href="#i-arrow"/></svg></span>
+    </div>
+
+    <div class="block-card" data-block="B">
+      <div class="glyph">B</div>
+      <div class="body">
+        <div class="eyebrow">Bloc B · Renforcement</div>
+        <div class="title">Genou &amp; hanche</div>
+        <p class="meta">Début de chaque séance, après l'échauffement · ~20 min</p>
+      </div>
+      <span class="arrow"><svg width="18" height="18"><use href="#i-arrow"/></svg></span>
+    </div>
+
+    <div class="block-card" data-block="C">
+      <div class="glyph">C</div>
+      <div class="body">
+        <div class="eyebrow">Bloc C · Musculation</div>
+        <div class="title">Full body progressif</div>
+        <p class="meta">3 séances / semaine, montée sur <strong>3 phases</strong></p>
+      </div>
+      <span class="arrow"><svg width="18" height="18"><use href="#i-arrow"/></svg></span>
+    </div>
+
+    <h3 class="group">Comment utiliser</h3>
+    <div class="callout">
+      <ul>
+        <li><strong>Tap</strong> sur une carte d'exercice pour la cocher pendant ta séance.</li>
+        <li>La <strong>barre de progression</strong> en haut de chaque séance se met à jour automatiquement.</li>
+        <li>Tes coches sont <strong>sauvegardées</strong> automatiquement dans Safari (même si tu fermes l'app).</li>
+        <li>Bouton <strong>« Reset »</strong> sur chaque séance pour repartir à zéro.</li>
+      </ul>
+    </div>
+
+    <h3 class="group">Principes</h3>
+    <div class="callout">
+      <ul>
+        <li><strong>Aucune douleur articulaire</strong> : si douleur, on réduit amplitude ou charge.</li>
+        <li><strong>Technique avant charge</strong> : tempo contrôlé prioritaire.</li>
+        <li><strong>Genoux alignés</strong> avec la pointe des pieds en flexion.</li>
+        <li><strong>RPE</strong> = effort perçu (1–10). RPE 6 = il reste 4 reps en réserve.</li>
+      </ul>
+    </div>
+
+    <div class="quick-jump">
+      <label for="tab2">Étirements <svg><use href="#i-arrow"/></svg></label>
+      <label for="tab3">Renforcement <svg><use href="#i-arrow"/></svg></label>
+      <label for="tab4">Musculation <svg><use href="#i-arrow"/></svg></label>
+      <label for="tab5">Suivi <svg><use href="#i-arrow"/></svg></label>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PANEL 2 — BLOC A — ÉTIREMENTS
+       ============================================================ -->
+  <section id="panel2" class="tab-panel" data-screen-label="02 Bloc A — Étirements">
+    <h2 class="section">Bloc A</h2>
+    <p class="section-sub">Étirements quotidiens — <strong>chaque jour</strong>, idéalement le soir · ~15 min</p>
+
+    <div class="progress" data-session="blocA" data-tone="a">
+      <span class="count"><span class="done-n">0</span><span class="of">/3</span></span>
+      <div class="track"><div class="fill"></div></div>
+      <button class="reset-btn" onclick="resetSession('blocA')"><svg><use href="#i-reset"/></svg>Reset</button>
+    </div>
+
+    <div class="exo-list" data-session="blocA">
+
+      <article class="exo" data-tone="a" data-exo="A1">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">Quadriceps debout</h4>
+          <div class="exo-stats">
+            <span class="stat-chip tone-a"><svg><use href="#i-time"/></svg>45 s</span>
+            <span class="stat-chip tone-a"><svg><use href="#i-sets"/></svg>3 × / côté</span>
+          </div>
+          <p class="exo-notes">Main en appui mur/chaise. Talon vers la fesse, dos droit. Variante : ajouter une légère extension de hanche (genou vers l'arrière).</p>
+        </div>
+      </article>
+
+      <article class="exo" data-tone="a" data-exo="A2">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">Ischio-jambiers sur marche</h4>
+          <div class="exo-stats">
+            <span class="stat-chip tone-a"><svg><use href="#i-time"/></svg>45 s</span>
+            <span class="stat-chip tone-a"><svg><use href="#i-sets"/></svg>3 × / côté</span>
+          </div>
+          <p class="exo-notes">Talon sur marche, genou tendu. Pencher les épaules vers l'avant, dos droit. Si trop facile : monter d'un cran.</p>
+        </div>
+      </article>
+
+      <article class="exo" data-tone="a" data-exo="A3">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">Mollets contre mur</h4>
+          <div class="exo-stats">
+            <span class="stat-chip tone-a"><svg><use href="#i-time"/></svg>20–30 s</span>
+            <span class="stat-chip tone-a"><svg><use href="#i-sets"/></svg>2 × / côté</span>
+          </div>
+          <p class="exo-notes">Mains au mur, jambe arrière tendue, talon au sol. Variante : fléchir la jambe arrière en gardant le talon au sol.</p>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="callout a">
+      <div class="c-title">Règle d'or</div>
+      <p>Étirement <strong>ferme mais supportable</strong>, jamais douleur vive. Respiration libre — ne pas bloquer le souffle.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PANEL 3 — BLOC B — RENFORCEMENT
+       ============================================================ -->
+  <section id="panel3" class="tab-panel" data-screen-label="03 Bloc B — Renforcement">
+    <h2 class="section">Bloc B</h2>
+    <p class="section-sub">Renforcement ciblé — début de séance ou en autonome · ~20 min</p>
+
+    <div class="progress" data-session="blocB" data-tone="b">
+      <span class="count"><span class="done-n">0</span><span class="of">/7</span></span>
+      <div class="track"><div class="fill"></div></div>
+      <button class="reset-btn" onclick="resetSession('blocB')"><svg><use href="#i-reset"/></svg>Reset</button>
+    </div>
+
+    <div data-session="blocB">
+
+      <h3 class="group">B.1 — Activation &amp; contrôle moteur</h3>
+      <div class="exo-list">
+
+        <article class="exo" data-tone="b" data-exo="B1">
+          <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+          <div class="exo-body">
+            <h4 class="exo-name">Rond de jambe</h4>
+            <div class="exo-stats">
+              <span class="stat-chip tone-b"><svg><use href="#i-sets"/></svg>2 × 10 / côté</span>
+              <span class="stat-chip"><svg><use href="#i-rest"/></svg>30 s</span>
+            </div>
+            <p class="exo-notes">Debout, en appui sur une jambe. Grands cercles avec l'autre jambe (avant → côté → arrière). Lent et contrôlé.</p>
+          </div>
+        </article>
+
+        <article class="exo" data-tone="b" data-exo="B2">
+          <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+          <div class="exo-body">
+            <h4 class="exo-name">Crabe (élastique au-dessus genoux)</h4>
+            <div class="exo-stats">
+              <span class="stat-chip tone-b"><svg><use href="#i-sets"/></svg>3 × 12 pas</span>
+              <span class="stat-chip"><svg><use href="#i-rest"/></svg>45 s</span>
+              <span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>RPE 6</span>
+            </div>
+            <p class="exo-notes">Élastique juste au-dessus des genoux. Demi-squat puis pas latéraux en gardant la tension. Cible : moyen fessier.</p>
+          </div>
+        </article>
+
+        <article class="exo" data-tone="b" data-exo="B3">
+          <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+          <div class="exo-body">
+            <h4 class="exo-name">Flexion de hanche</h4>
+            <div class="exo-stats">
+              <span class="stat-chip tone-b"><svg><use href="#i-sets"/></svg>3 × 12 / côté</span>
+              <span class="stat-chip"><svg><use href="#i-rest"/></svg>30 s</span>
+              <span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>RPE 5–6</span>
+            </div>
+            <p class="exo-notes">Debout, monter le genou à hauteur de hanche, contrôler la descente. Variante : élastique à la cheville.</p>
+          </div>
+        </article>
+
+      </div>
+
+      <h3 class="group">B.2 — Quadriceps &amp; fessiers</h3>
+      <div class="exo-list">
+
+        <article class="exo" data-tone="b" data-exo="B4">
+          <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+          <div class="exo-body">
+            <h4 class="exo-name">Chaise contre mur</h4>
+            <div class="exo-stats">
+              <span class="stat-chip tone-b"><svg><use href="#i-sets"/></svg>2–3 × 30–45 s</span>
+              <span class="stat-chip"><svg><use href="#i-rest"/></svg>1 min</span>
+              <span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>RPE 7</span>
+            </div>
+            <p class="exo-notes">Dos plaqué au mur, genoux à 70° de flexion (90° en variante). Gainage isométrique.</p>
+          </div>
+        </article>
+
+        <article class="exo" data-tone="b" data-exo="B5">
+          <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+          <div class="exo-body">
+            <h4 class="exo-name">Fentes</h4>
+            <div class="exo-stats">
+              <span class="stat-chip tone-b"><svg><use href="#i-sets"/></svg>3 × 10 / côté</span>
+              <span class="stat-chip"><svg><use href="#i-rest"/></svg>1 min</span>
+              <span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>RPE 6–7</span>
+            </div>
+            <p class="exo-notes">Dos droit, genou aligné avec le pied. 3 s en position basse puis remonter. Si OK : +5 kg haltères.</p>
+          </div>
+        </article>
+
+        <article class="exo" data-tone="b" data-exo="B6">
+          <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+          <div class="exo-body">
+            <h4 class="exo-name">Squat (pieds vers l'extérieur)</h4>
+            <div class="exo-stats">
+              <span class="stat-chip tone-b"><svg><use href="#i-sets"/></svg>3 × 10</span>
+              <span class="stat-chip"><svg><use href="#i-rest"/></svg>1 min</span>
+              <span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>RPE 6–7</span>
+            </div>
+            <p class="exo-notes">Pointes légèrement vers l'ext. Charge <strong>5–8 kg</strong> (goblet squat). 3 s en bas. Si difficile : 1/2 squat.</p>
+          </div>
+        </article>
+
+        <article class="exo" data-tone="b" data-exo="B7">
+          <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+          <div class="exo-body">
+            <h4 class="exo-name">Pont (hip thrust au sol)</h4>
+            <div class="exo-stats">
+              <span class="stat-chip tone-b"><svg><use href="#i-sets"/></svg>3 × 10</span>
+              <span class="stat-chip"><svg><use href="#i-rest"/></svg>1 min</span>
+              <span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>RPE 6–7</span>
+            </div>
+            <p class="exo-notes">Allongé, genoux à 90°. Lever bassin à l'inspi, tenir 10–20 s. Variante : <strong>petite charge</strong> sur bassin (5–8 kg).</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="callout b">
+      <div class="c-title">Articulation avec la muscu</div>
+      <ul>
+        <li><strong>Jour de séance</strong> : Bloc B en début (après échauffement).</li>
+        <li><strong>Jour de repos</strong> : Bloc B en autonome 20 min. Min 3×/sem.</li>
+        <li><strong>Bloc A</strong> : tous les jours sans exception.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PANEL 4 — BLOC C — MUSCULATION
+       ============================================================ -->
+  <section id="panel4" class="tab-panel" data-screen-label="04 Bloc C — Musculation">
+    <h2 class="section">Bloc C</h2>
+    <p class="section-sub">Musculation 6 semaines — full body progressif</p>
+
+    <h3 class="group">Échauffement standard (10–12 min)</h3>
+
+    <div class="progress" data-session="echauf" data-tone="warm">
+      <span class="count"><span class="done-n">0</span><span class="of">/6</span></span>
+      <div class="track"><div class="fill"></div></div>
+      <button class="reset-btn" onclick="resetSession('echauf')"><svg><use href="#i-reset"/></svg>Reset</button>
+    </div>
+
+    <div class="exo-list" data-session="echauf">
+
+      <article class="exo" data-exo="E1">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">Cardio léger (vélo / rameur)</h4>
+          <div class="exo-stats"><span class="stat-chip"><svg><use href="#i-time"/></svg>5 min</span></div>
+          <p class="exo-notes">Allure conversationnelle, montée progressive de la cadence.</p>
+        </div>
+      </article>
+
+      <article class="exo" data-exo="E2">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">90/90 hip switch</h4>
+          <div class="exo-stats"><span class="stat-chip"><svg><use href="#i-sets"/></svg>2 × 8 / côté</span></div>
+          <p class="exo-notes">Mobilité hanche multi-plans.</p>
+        </div>
+      </article>
+
+      <article class="exo" data-exo="E3">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">World's greatest stretch</h4>
+          <div class="exo-stats"><span class="stat-chip"><svg><use href="#i-sets"/></svg>2 × 5 / côté</span></div>
+          <p class="exo-notes">Mobilité globale hanche / thoracique.</p>
+        </div>
+      </article>
+
+      <article class="exo" data-exo="E4">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">Squat à vide tempo lent</h4>
+          <div class="exo-stats"><span class="stat-chip"><svg><use href="#i-sets"/></svg>2 × 10</span></div>
+          <p class="exo-notes">Descente 3 s, remontée 1 s. Contrôle moteur du genou.</p>
+        </div>
+      </article>
+
+      <article class="exo" data-exo="E5">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">Glute bridge</h4>
+          <div class="exo-stats"><span class="stat-chip"><svg><use href="#i-sets"/></svg>2 × 15</span></div>
+          <p class="exo-notes">Activation fessiers.</p>
+        </div>
+      </article>
+
+      <article class="exo" data-exo="E6">
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span>
+        <div class="exo-body">
+          <h4 class="exo-name">Bird dog</h4>
+          <div class="exo-stats"><span class="stat-chip"><svg><use href="#i-sets"/></svg>2 × 8 / côté</span></div>
+          <p class="exo-notes">Activation tronc + coordination.</p>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="section-sub" style="margin-top:14px;font-style:italic;">→ Enchaîner avec le <strong>Bloc B</strong>, puis la séance principale.</p>
+
+    <!-- ============ PHASE 1 ============ -->
+    <section class="phase" data-phase="1">
+      <div class="phase-head">
+        <span class="phase-badge">PHASE 1</span>
+        <span class="phase-weeks">Sem 1–2</span>
+      </div>
+      <h3 class="phase-title">Réactivation neuromusculaire</h3>
+      <p class="phase-desc">Reconnexion mind-muscle, charges très légères. RPE 5–6.</p>
+
+      <h4 class="session-title">Séance A <span class="pill">Lundi</span></h4>
+      <div class="progress" data-session="P1A" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/5</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P1A')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P1A">
+        <article class="exo" data-tone="c" data-exo="P1A1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Goblet squat (pieds vers l'ext.)</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>5–6</span></div><p class="exo-notes">Charge 5–8 kg. Descente 3 s. Genoux alignés pieds.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1A2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé couché haltères</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>5–6</span></div><p class="exo-notes">Pause 1 s en bas.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1A3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Tirage poitrine prise neutre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Contraction marquée des dorsaux.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1A4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Hip thrust barre légère</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 15</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Squeeze 2 s en haut.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1A5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Gainage planche</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 30 s</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>45 s</span></div><p class="exo-notes">Bassin neutre, pas de cambrure.</p></div></article>
+      </div>
+
+      <h4 class="session-title">Séance B <span class="pill">Mercredi</span></h4>
+      <div class="progress" data-session="P1B" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/5</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P1B')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P1B">
+        <article class="exo" data-tone="c" data-exo="P1B1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Soulevé de terre roumain haltères</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>5–6</span></div><p class="exo-notes">Charges légères, focus technique. Dos plat.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1B2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé épaules haltères assis</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Coudes légèrement avancés.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1B3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Rowing haltère unilatéral</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12 / côté</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Coude le long du corps.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1B4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Fentes marchées poids du corps</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 10 / jambe</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>5</span></div><p class="exo-notes">Test tolérance genou. Pas trop longues.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1B5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Crunch + gainage latéral</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12 + 30 s</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span></div><p class="exo-notes">Abdos + obliques.</p></div></article>
+      </div>
+
+      <h4 class="session-title">Séance C <span class="pill">Vendredi · Samedi</span></h4>
+      <div class="progress" data-session="P1C" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/6</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P1C')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P1C">
+        <article class="exo" data-tone="c" data-exo="P1C1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Leg press amplitude progressive</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Démarrer amplitude partielle, élargir si sans douleur.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1C2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé incliné machine</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Contrôle de la descente.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1C3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Tirage horizontal câble</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Buste droit, scapulas en rétraction.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1C4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Leg curl allongé</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 15</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Ischios. Tempo lent.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1C5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Élévations latérales</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 15</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>45 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Coudes légèrement fléchis.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P1C6"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Mollets debout</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 15</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>45 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>6</span></div><p class="exo-notes">Amplitude complète.</p></div></article>
+      </div>
+    </section>
+
+    <!-- ============ PHASE 2 ============ -->
+    <section class="phase" data-phase="2">
+      <div class="phase-head">
+        <span class="phase-badge">PHASE 2</span>
+        <span class="phase-weeks">Sem 3–4</span>
+      </div>
+      <h3 class="phase-title">Montée progressive du volume</h3>
+      <p class="phase-desc">Densification, retour barre. RPE 7. Charges +10 à +20 % vs phase 1.</p>
+
+      <h4 class="session-title">Séance A <span class="pill">Lundi</span></h4>
+      <div class="progress" data-session="P2A" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/5</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P2A')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P2A">
+        <article class="exo" data-tone="c" data-exo="P2A1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Back squat barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Pieds légèrement vers l'ext. Profondeur tolérée. Contrôle absolu.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2A2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé couché barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Pause 1 s à la poitrine sur la 1re série.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2A3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Tractions assistées ou tirage vertical</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Contraction complète.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2A4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Hip thrust barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Charge progressive. Pause 2 s en haut.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2A5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Gainage planche + planche latérale</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 45 s + 30 s/c</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span></div><p class="exo-notes">Bassin neutre.</p></div></article>
+      </div>
+
+      <h4 class="session-title">Séance B <span class="pill">Mercredi</span></h4>
+      <div class="progress" data-session="P2B" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/5</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P2B')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P2B">
+        <article class="exo" data-tone="c" data-exo="P2B1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Soulevé de terre roumain barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Charges modérées. Dos plat, scapulas serrées.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2B2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé militaire barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Gainage actif.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2B3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Rowing barre buste penché</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Buste à 45°.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2B4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Fentes haltères</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 10 / jambe</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Charges 8–12 kg. Genou aligné.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2B5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Relevés de jambes suspendus</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span></div><p class="exo-notes">Ou crunch si trop dur.</p></div></article>
+      </div>
+
+      <h4 class="session-title">Séance C <span class="pill">Vendredi · Samedi</span></h4>
+      <div class="progress" data-session="P2C" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/6</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P2C')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P2C">
+        <article class="exo" data-tone="c" data-exo="P2C1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Leg press amplitude complète</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Charge nominale retrouvée si tolérance OK.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2C2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé incliné haltères</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Pause 1 s en bas.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2C3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Tirage horizontal câble prise serrée</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Pause 1 s contraction.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2C4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Leg curl allongé</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Ischios.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2C5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Élévations latérales</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>45 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Contrôle.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P2C6"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Mollets debout</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 15</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>45 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Tempo 2-1-2.</p></div></article>
+      </div>
+    </section>
+
+    <!-- ============ PHASE 3 ============ -->
+    <section class="phase" data-phase="3">
+      <div class="phase-head">
+        <span class="phase-badge">PHASE 3</span>
+        <span class="phase-weeks">Sem 5–6</span>
+      </div>
+      <h3 class="phase-title">Retour aux charges de travail</h3>
+      <p class="phase-desc">Charges habituelles d'avant arrêt, RPE 7–8.</p>
+
+      <div class="callout c">
+        <div class="c-title">Bascule Full Body → Upper/Lower (optionnelle)</div>
+        <p style="color:var(--ink-2);">Si tolérance excellente fin S4 :</p>
+        <ul>
+          <li><strong>Lun</strong> : Lower A · <strong>Mar</strong> : Upper A</li>
+          <li><strong>Jeu</strong> : Lower B · <strong>Ven</strong> : Upper B</li>
+        </ul>
+      </div>
+
+      <h4 class="session-title">Séance A <span class="pill">Lundi</span></h4>
+      <div class="progress" data-session="P3A" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/5</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P3A')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P3A">
+        <article class="exo" data-tone="c" data-exo="P3A1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Back squat barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 8</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2–3 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Charge habituelle visée. Profondeur complète si non douloureuse.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3A2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé couché barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 8</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Pause 1 s à la poitrine sur la 1re série.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3A3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Tractions lestées ou tirage vertical lourd</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 8</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Contraction complète.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3A4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Hip thrust barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Charge nominale.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3A5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Gainage chargé</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 60 s</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span></div><p class="exo-notes">Plate avec poids sur le dos.</p></div></article>
+      </div>
+
+      <h4 class="session-title">Séance B <span class="pill">Mercredi</span></h4>
+      <div class="progress" data-session="P3B" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/5</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P3B')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P3B">
+        <article class="exo" data-tone="c" data-exo="P3B1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Soulevé de terre barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 6</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>3 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Reprise progressive. Charge modérée S5, +10 kg en S6.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3B2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé militaire barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 8</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Gainage actif.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3B3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Rowing barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 8</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Buste à 45°.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3B4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Fentes bulgares</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 10 / jambe</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Pied arrière sur banc. Test tolérance.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3B5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Abdos lestés</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span></div><p class="exo-notes">Charge progressive.</p></div></article>
+      </div>
+
+      <h4 class="session-title">Séance C <span class="pill">Vendredi · Samedi</span></h4>
+      <div class="progress" data-session="P3C" data-tone="c">
+        <span class="count"><span class="done-n">0</span><span class="of">/6</span></span>
+        <div class="track"><div class="fill"></div></div>
+        <button class="reset-btn" onclick="resetSession('P3C')"><svg><use href="#i-reset"/></svg>Reset</button>
+      </div>
+      <div class="exo-list" data-session="P3C">
+        <article class="exo" data-tone="c" data-exo="P3C1"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Front squat ou hack squat</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 8</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Variante sympa pour le genou.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3C2"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Développé incliné barre</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 8</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>2 min</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Pause 1 s en bas.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3C3"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Tirage poulie haute prise large</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>90 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Contraction complète.</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3C4"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Leg curl + leg extension partielle</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 12 / 12</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>60 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7</span></div><p class="exo-notes">Leg extension uniquement amplitude haute (60°→0°).</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3C5"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Élévations latérales lourdes</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>4 × 10</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>45 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>8</span></div><p class="exo-notes">—</p></div></article>
+        <article class="exo" data-tone="c" data-exo="P3C6"><span class="check"><svg viewBox="0 0 24 24"><path d="M5 13l5 5 9-11"/></svg></span><div class="exo-body"><h4 class="exo-name">Mollets debout + assis</h4><div class="exo-stats"><span class="stat-chip tone-c"><svg><use href="#i-sets"/></svg>3 × 15 + 3 × 20</span><span class="stat-chip"><svg><use href="#i-rest"/></svg>45 s</span><span class="stat-chip rpe"><svg><use href="#i-rpe"/></svg>7–8</span></div><p class="exo-notes">Tempo contrôlé.</p></div></article>
+      </div>
+    </section>
+  </section>
+
+  <!-- ============================================================
+       PANEL 5 — SUIVI
+       ============================================================ -->
+  <section id="panel5" class="tab-panel" data-screen-label="05 Suivi">
+    <h2 class="section">Suivi &amp; règles</h2>
+    <p class="section-sub">Repères, signaux, semaine type.</p>
+
+    <h3 class="group">Repères hebdomadaires</h3>
+    <div class="callout">
+      <ul>
+        <li>Toutes les séries au RPE indiqué : <strong>+2,5 à +5 kg</strong> la semaine suivante.</li>
+        <li>Une seule série au RPE max : on garde la charge, gagner 1–2 reps.</li>
+        <li><strong>Douleur articulaire</strong> : −20 % charge, amplitude réduite. Si persiste : retirer + signaler kiné.</li>
+      </ul>
+    </div>
+
+    <h3 class="group">Signaux d'alerte (kiné / médecin du sport)</h3>
+    <div class="callout a">
+      <ul>
+        <li>Douleur articulaire vive pendant l'exercice.</li>
+        <li>Gonflement ou raideur du genou/hanche au réveil.</li>
+        <li>Craquement <strong>douloureux</strong>.</li>
+        <li>Sensation d'instabilité ou dérobement.</li>
+      </ul>
+    </div>
+
+    <h3 class="group">Semaine type</h3>
+    <div class="week-table">
+      <div class="week-row head"><div class="week-day">Jour</div><div class="week-content">Contenu</div></div>
+      <div class="week-row"><div class="week-day">Lundi<span class="dur">60–75 min</span></div><div class="week-content">Échauf. + Bloc B + <strong>Séance A</strong> + Bloc A</div></div>
+      <div class="week-row"><div class="week-day">Mardi<span class="dur">15 min</span></div><div class="week-content">Repos actif — Bloc A (+ Bloc B optionnel)</div></div>
+      <div class="week-row"><div class="week-day">Mercredi<span class="dur">60–75 min</span></div><div class="week-content">Échauf. + Bloc B + <strong>Séance B</strong> + Bloc A</div></div>
+      <div class="week-row"><div class="week-day">Jeudi<span class="dur">15 min</span></div><div class="week-content">Repos actif — Bloc A</div></div>
+      <div class="week-row"><div class="week-day">Ven. · Sam.<span class="dur">60–75 min</span></div><div class="week-content">Échauf. + Bloc B + <strong>Séance C</strong> + Bloc A</div></div>
+      <div class="week-row"><div class="week-day">Autres<span class="dur">15 min</span></div><div class="week-content">Repos — Bloc A quotidien</div></div>
+    </div>
+
+    <h3 class="group">Sauvegarde manuelle</h3>
+    <div class="callout">
+      <p>Filet de sécurité. Tes coches sont déjà sauvegardées <strong>automatiquement</strong> dans Safari <em>et</em> dans l'URL de l'icône d'écran d'accueil. Mais si Safari purge son stockage (ça arrive après plusieurs semaines d'inactivité), tu peux <strong>exporter un code</strong> à conserver dans tes notes, puis le coller ici pour tout restaurer.</p>
+
+      <div class="save-row">
+        <button class="save-btn" type="button" onclick="onExport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+          Exporter ma progression
+        </button>
+        <button class="save-btn ghost" type="button" onclick="onCopy()" id="copyBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copier
+        </button>
+      </div>
+      <textarea id="exportCode" class="save-code" readonly placeholder="Appuie sur « Exporter » pour générer ton code…" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+
+      <hr class="save-sep">
+
+      <div class="save-row">
+        <button class="save-btn ghost" type="button" onclick="onImport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>
+          Importer un code
+        </button>
+      </div>
+      <textarea id="importCode" class="save-code" placeholder="Colle ici un code exporté précédemment…" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+      <p id="importStatus" class="save-status"></p>
+    </div>
+
+    <h3 class="group">Données sauvegardées</h3>
+    <div class="callout">
+      <p>Toutes tes coches sont sauvegardées localement dans Safari. Bouton ci-dessous pour tout effacer si tu veux repartir à zéro :</p>
+      <p style="margin-top:12px;margin-bottom:0;">
+        <button class="danger" onclick="resetAll()">⚠︎ Tout réinitialiser</button>
+      </p>
+    </div>
+
+    <div class="callout">
+      <div class="c-title">Mémo final</div>
+      <p>Cadre, pas une cage. Si une séance ne se passe pas, on adapte. Mieux vaut une semaine adaptée qu'une rechute.</p>
+      <p style="margin-bottom:0;">Le travail kiné (Blocs A + B) est <strong>prioritaire</strong> les premières semaines. La muscu vient autour.</p>
+    </div>
+
+    <div class="footer">Programme · 6 semaines · v2</div>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================
+   PERSISTANCE MULTI-COUCHE
+   - localStorage (clé inchangée : programme_entrainement_v1)
+   - hash URL bitfield base64url (survit à la purge Safari car
+     l'icône d'écran d'accueil conserve l'URL complète)
+   - export/import manuel (filet de sécurité)
+   - resync visibilitychange + pageshow (bfcache)
+   ============================================================ */
+
+const STORAGE_KEY   = 'programme_entrainement_v1';
+const WEEK_KEY      = 'programme_current_week_v1';
+const LASTSAVE_KEY  = 'programme_last_save_v1';
+const HASH_VERSION  = '1';
+
+/* ---- Liste canonique des exercices, dans l'ordre du DOM.
+   Toute coche est un bit à la position correspondante. ---- */
+const EXO_IDS = Array.from(document.querySelectorAll('.exo[data-exo]'))
+  .map(el => el.dataset.exo);
+
+/* ============================================================
+   ENCODAGE BITFIELD ↔ base64url
+   ============================================================ */
+function stateToBytes(s) {
+  const n = EXO_IDS.length;
+  const bytes = new Uint8Array(Math.ceil(n / 8));
+  for (let i = 0; i < n; i++) {
+    if (s[EXO_IDS[i]]) bytes[i >> 3] |= (1 << (i & 7));
+  }
+  return bytes;
+}
+function bytesToState(bytes) {
+  const out = {};
+  const n = Math.min(EXO_IDS.length, bytes.length * 8);
+  for (let i = 0; i < n; i++) {
+    if (bytes[i >> 3] & (1 << (i & 7))) out[EXO_IDS[i]] = true;
+  }
+  return out;
+}
+function b64urlEncode(bytes) {
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function b64urlDecode(s) {
+  if (!s) return null;
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  try {
+    const bin = atob(s);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  } catch (e) { return null; }
+}
+
+/* Format hash : #v=1&s=<bf>&w=<week>  */
+function encodeHash(s, week) {
+  return 'v=' + HASH_VERSION
+       + '&s=' + b64urlEncode(stateToBytes(s))
+       + '&w=' + (week || 1);
+}
+function parseHash(raw) {
+  if (!raw) return null;
+  if (raw.charAt(0) === '#') raw = raw.slice(1);
+  if (!raw) return null;
+  const params = {};
+  raw.split('&').forEach(p => {
+    const ix = p.indexOf('=');
+    if (ix > 0) params[p.slice(0, ix)] = p.slice(ix + 1);
+  });
+  let st = null, wk = null;
+  if (params.s) {
+    const bytes = b64urlDecode(params.s);
+    if (bytes) st = bytesToState(bytes);
+  }
+  if (params.w) {
+    const w = parseInt(params.w, 10);
+    if (w >= 1 && w <= 6) wk = w;
+  }
+  return { state: st, week: wk };
+}
+
+/* Code export (compact, copiable) — réutilise le même format que le hash */
+function encodeCode(s, week) {
+  return encodeHash(s, week);
+}
+function decodeCode(str) {
+  if (!str) return null;
+  // tolérant : accepte "#…", "…?#…", ou juste la valeur s=
+  str = str.trim().replace(/^#+/, '');
+  // si l'utilisateur a collé l'URL complète, on garde tout après le #
+  if (str.indexOf('://') >= 0) {
+    const ix = str.indexOf('#');
+    if (ix >= 0) str = str.slice(ix + 1);
+  }
+  return parseHash(str);
+}
+
+/* ============================================================
+   STOCKAGE
+   ============================================================ */
+function loadLocalState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}; }
+  catch (e) { return {}; }
+}
+function saveLocalState(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+  catch (e) { /* quota / private mode */ }
+}
+function loadLocalWeek() {
+  try {
+    const w = parseInt(localStorage.getItem(WEEK_KEY) || '1', 10);
+    return (w >= 1 && w <= 6) ? w : 1;
+  } catch (e) { return 1; }
+}
+function saveLocalWeek(w) {
+  try { localStorage.setItem(WEEK_KEY, String(w)); } catch (e) {}
+}
+
+/* Fusion : union — on garde tout ce qui est coché dans l'une OU l'autre */
+function mergeStates(/* ...sources */) {
+  const out = {};
+  for (let i = 0; i < arguments.length; i++) {
+    const src = arguments[i] || {};
+    for (const k in src) if (src[k]) out[k] = true;
+  }
+  return out;
+}
+function statesEqual(a, b) {
+  for (const k in a) if (a[k] && !b[k]) return false;
+  for (const k in b) if (b[k] && !a[k]) return false;
+  return true;
+}
+
+/* ============================================================
+   ÉTAT EN MÉMOIRE
+   ============================================================ */
+let state = {};
+let currentWeek = 1;
+
+/* ============================================================
+   ÉCRITURE HASH — debounce 200 ms max
+   ============================================================ */
+let hashTimer = null;
+function scheduleHashWrite() {
+  if (hashTimer) return;
+  hashTimer = setTimeout(writeHashNow, 200);
+}
+function writeHashNow() {
+  if (hashTimer) { clearTimeout(hashTimer); hashTimer = null; }
+  const enc = encodeHash(state, currentWeek);
+  try {
+    history.replaceState(null, '', '#' + enc);
+  } catch (e) {
+    try { location.hash = enc; } catch(_) {}
+  }
+}
+
+/* ============================================================
+   INDICATEUR "Dernière sauvegarde"
+   ============================================================ */
+let lastSaveTs = 0;
+try {
+  const t = parseInt(localStorage.getItem(LASTSAVE_KEY) || '0', 10);
+  if (t > 0) lastSaveTs = t;
+} catch (e) {}
+
+function markSaved() {
+  lastSaveTs = Date.now();
+  try { localStorage.setItem(LASTSAVE_KEY, String(lastSaveTs)); } catch (e) {}
+  renderLastSave(true);
+}
+function renderLastSave(justNow) {
+  const el = document.getElementById('lastSave');
+  if (!el) return;
+  if (!lastSaveTs) { el.textContent = 'Sauvegarde locale prête'; return; }
+  const sec = Math.max(0, Math.floor((Date.now() - lastSaveTs) / 1000));
+  let txt;
+  if (sec < 3) txt = 'à l\u2019instant';
+  else if (sec < 60) txt = 'il y a ' + sec + ' s';
+  else if (sec < 3600) txt = 'il y a ' + Math.floor(sec / 60) + ' min';
+  else if (sec < 86400) txt = 'il y a ' + Math.floor(sec / 3600) + ' h';
+  else txt = 'il y a ' + Math.floor(sec / 86400) + ' j';
+  el.textContent = 'Dernière sauvegarde : ' + txt;
+  el.classList.toggle('flash', !!justNow);
+  if (justNow) {
+    clearTimeout(renderLastSave._t);
+    renderLastSave._t = setTimeout(() => el.classList.remove('flash'), 1200);
+  }
+}
+setInterval(() => renderLastSave(false), 15000);
+
+/* ============================================================
+   PERSIST APPELÉ APRÈS CHAQUE CHANGEMENT
+   ============================================================ */
+function persistAll() {
+  saveLocalState(state);
+  saveLocalWeek(currentWeek);
+  scheduleHashWrite();
+  markSaved();
+}
+
+/* ============================================================
+   HAPTIC
+   ============================================================ */
+function haptic(ms) {
+  if (navigator && typeof navigator.vibrate === 'function') {
+    try { navigator.vibrate(ms || 8); } catch (e) {}
+  }
+}
+
+/* ============================================================
+   COCHE
+   ============================================================ */
+function toggleCard(card) {
+  const id = card.dataset.exo;
+  if (!id) return;
+  const willBeDone = !card.classList.contains('done');
+  card.classList.toggle('done', willBeDone);
+  if (willBeDone) { state[id] = true; haptic(10); }
+  else { delete state[id]; }
+  const session = card.closest('[data-session]');
+  if (session) updateProgress(session.dataset.session);
+  updateOverall();
+  persistAll();
+}
+
+/* ============================================================
+   MAJ PROGRESSION D'UNE SESSION
+   ============================================================ */
+function updateProgress(sessionName) {
+  const sessionEl  = document.querySelector(`[data-session="${sessionName}"]:not(.progress)`);
+  const progressEl = document.querySelector(`.progress[data-session="${sessionName}"]`);
+  if (!sessionEl || !progressEl) return;
+  const cards = sessionEl.querySelectorAll('.exo[data-exo]');
+  const done  = sessionEl.querySelectorAll('.exo.done').length;
+  const total = cards.length;
+  const pct   = total > 0 ? (done / total) * 100 : 0;
+  progressEl.querySelector('.fill').style.width = pct + '%';
+  progressEl.querySelector('.done-n').textContent = done;
+  progressEl.classList.toggle('done', done === total && total > 0);
+}
+function updateAllProgress() {
+  document.querySelectorAll('.progress[data-session]').forEach(p => updateProgress(p.dataset.session));
+}
+function updateOverall() {
+  const total = document.querySelectorAll('.exo[data-exo]').length;
+  const done  = document.querySelectorAll('.exo.done[data-exo]').length;
+  const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+  const el = document.getElementById('overallPct');
+  if (el) el.textContent = pct + '%';
+}
+
+/* ============================================================
+   PEINTURE depuis state
+   ============================================================ */
+function paintFromState() {
+  document.querySelectorAll('.exo[data-exo]').forEach(card => {
+    card.classList.toggle('done', !!state[card.dataset.exo]);
+  });
+  updateAllProgress();
+  updateOverall();
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+function resetSession(sessionName) {
+  const sessionEl = document.querySelector(`[data-session="${sessionName}"]:not(.progress)`);
+  if (!sessionEl) return;
+  if (!confirm('Réinitialiser cette séance ?')) return;
+  sessionEl.querySelectorAll('.exo.done').forEach(c => {
+    c.classList.remove('done');
+    delete state[c.dataset.exo];
+  });
+  updateProgress(sessionName);
+  updateOverall();
+  persistAll();
+  haptic(15);
+}
+function resetAll() {
+  if (!confirm('Tout réinitialiser ? Toutes tes coches seront effacées (local + URL).')) return;
+  state = {};
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  document.querySelectorAll('.exo.done').forEach(c => c.classList.remove('done'));
+  updateAllProgress();
+  updateOverall();
+  writeHashNow();
+  markSaved();
+  haptic(20);
+}
+
+/* ============================================================
+   SEMAINE / PHASE
+   ============================================================ */
+const PHASE_LABELS = {
+  1: '1 · Réactivation',
+  2: '2 · Volume progressif',
+  3: '3 · Charges de travail'
+};
+function setWeek(n, persist) {
+  currentWeek = n;
+  let phase = 1;
+  document.querySelectorAll('.week-btn').forEach(btn => {
+    const w = parseInt(btn.dataset.week, 10);
+    const active = (w === n);
+    btn.classList.toggle('active', active);
+    if (active) phase = parseInt(btn.dataset.phase, 10);
+  });
+  const pill = document.getElementById('phasePill');
+  if (pill) pill.setAttribute('data-phase', phase);
+  const lbl = document.getElementById('phaseLabel');
+  if (lbl) lbl.textContent = PHASE_LABELS[phase];
+  if (persist) persistAll();
+}
+document.querySelectorAll('.week-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setWeek(parseInt(btn.dataset.week, 10), true);
+    haptic(8);
+  });
+});
+
+/* ============================================================
+   LABEL DATE
+   ============================================================ */
+(function initTodayLabel() {
+  const el = document.getElementById('todayLabel');
+  if (!el) return;
+  try {
+    const d = new Date();
+    const fmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+    let s = fmt.format(d);
+    s = s.charAt(0).toUpperCase() + s.slice(1);
+    el.textContent = s.replace(/\./g, '');
+  } catch (e) {}
+})();
+
+/* ============================================================
+   EXPORT / IMPORT manuels
+   ============================================================ */
+function onExport() {
+  const ta = document.getElementById('exportCode');
+  if (!ta) return;
+  ta.value = encodeCode(state, currentWeek);
+  ta.focus();
+  try { ta.select(); ta.setSelectionRange(0, ta.value.length); } catch(e) {}
+  haptic(8);
+}
+function onCopy() {
+  const ta = document.getElementById('exportCode');
+  if (!ta || !ta.value) onExport();
+  const code = ta.value;
+  const btn = document.getElementById('copyBtn');
+  const fallback = () => {
+    try { ta.select(); ta.setSelectionRange(0, code.length); document.execCommand('copy'); return true; }
+    catch(e) { return false; }
+  };
+  const flash = (msg, ok) => {
+    if (!btn) return;
+    const old = btn.innerHTML;
+    btn.innerHTML = (ok ? '✓ ' : '⚠︎ ') + msg;
+    setTimeout(() => { btn.innerHTML = old; }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(
+      () => flash('Copié', true),
+      () => flash(fallback() ? 'Copié' : 'À copier à la main', fallback())
+    );
+  } else {
+    flash(fallback() ? 'Copié' : 'À copier à la main', fallback());
+  }
+}
+function onImport() {
+  const ta = document.getElementById('importCode');
+  const status = document.getElementById('importStatus');
+  if (!ta || !status) return;
+  const raw = (ta.value || '').trim();
+  status.classList.remove('ok', 'err');
+  if (!raw) { status.textContent = 'Colle un code avant d\u2019importer.'; status.classList.add('err'); return; }
+  const parsed = decodeCode(raw);
+  if (!parsed || !parsed.state) {
+    status.textContent = 'Code invalide ou illisible.';
+    status.classList.add('err');
+    haptic(20);
+    return;
+  }
+  const before = Object.keys(state).filter(k => state[k]).length;
+  state = mergeStates(state, parsed.state);
+  const after = Object.keys(state).filter(k => state[k]).length;
+  const added = after - before;
+  paintFromState();
+  if (parsed.week) setWeek(parsed.week, false);
+  persistAll();
+  status.textContent = added > 0
+    ? '✓ Restauré · ' + added + ' coche' + (added > 1 ? 's' : '') + ' ajoutée' + (added > 1 ? 's' : '') + ' (total ' + after + ').'
+    : '✓ Code valide, aucune nouveauté à restaurer (total ' + after + ').';
+  status.classList.add('ok');
+  ta.value = '';
+  haptic(15);
+}
+
+/* ============================================================
+   RESYNC depuis toutes les sources
+   appelée à l'init, et à chaque retour au premier plan
+   ============================================================ */
+function resyncFromAllSources(reason) {
+  const local = loadLocalState();
+  const parsed = parseHash(location.hash) || {};
+  const hashState = parsed.state || {};
+  const merged = mergeStates(state, local, hashState);
+
+  let changed = !statesEqual(state, merged);
+  state = merged;
+
+  // semaine : hash > local > défaut
+  let wk = (parsed.week || loadLocalWeek() || 1);
+  if (wk !== currentWeek) { setWeek(wk, false); changed = true; }
+
+  if (changed) {
+    paintFromState();
+    // Re-écrit immédiatement local + hash pour resynchroniser les deux
+    saveLocalState(state);
+    saveLocalWeek(currentWeek);
+    writeHashNow();
+    // on ne marque pas comme "saved" pour ne pas écraser l'horloge
+  }
+  renderLastSave(false);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init() {
+  // état initial = union locale + hash
+  const local = loadLocalState();
+  const parsed = parseHash(location.hash) || {};
+  state = mergeStates(local, parsed.state || {});
+  currentWeek = parsed.week || loadLocalWeek() || 1;
+
+  paintFromState();
+  setWeek(currentWeek, false);
+
+  // resynchronise immédiatement les deux couches (au cas où l'une était plus complète)
+  saveLocalState(state);
+  saveLocalWeek(currentWeek);
+  writeHashNow();
+  renderLastSave(false);
+}
+init();
+
+/* ============================================================
+   ÉCOUTE COCHE — délégation globale
+   ============================================================ */
+document.addEventListener('click', (ev) => {
+  // évite de cocher en cliquant dans un textarea/bouton interne
+  if (ev.target.closest('textarea, button, input, a, label, select')) return;
+  const card = ev.target.closest('.exo[data-exo]');
+  if (!card) return;
+  toggleCard(card);
+});
+
+/* ============================================================
+   RESYNC : retour au premier plan (cas iOS Safari : bascule
+   d'app puis retour quelques minutes plus tard, sans reload)
+   ============================================================ */
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    // au retour : on flush d'abord ce qui était en attente, puis on resync
+    if (hashTimer) writeHashNow();
+    resyncFromAllSources('visibility');
+  } else {
+    // on part en arrière-plan : flush immédiat du hash en attente
+    if (hashTimer) writeHashNow();
+  }
+});
+
+/* pageshow gère le bfcache (event.persisted = true) */
+window.addEventListener('pageshow', (e) => {
+  resyncFromAllSources(e && e.persisted ? 'bfcache' : 'pageshow');
+});
+
+/* avant de quitter — dernière chance de flusher */
+window.addEventListener('pagehide', () => {
+  if (hashTimer) writeHashNow();
+});
+window.addEventListener('beforeunload', () => {
+  if (hashTimer) writeHashNow();
+});
+</script>
+
+</body>
+</html>
