@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Programme">
+<meta name="theme-color" content="#1F4E79">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light">
+<title>Programme d'entraînement</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iIzFGNEU3OSIvPjxwYXRoIGQ9Ik0zNiAxNDAgTDcyIDk4IEw5MCAxMTYgTDEyNiA3MCBMMTQ0IDcwIiBmaWxsPSJub25lIiBzdHJva2U9IiNGNUY1RjciIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMTQ0IiBjeT0iNzAiIHI9IjgiIGZpbGw9IiNGNUY1RjciLz48L3N2Zz4=">
+<style>
+:root{
+  --bg:#F5F5F7;
+  --surface:#FFFFFF;
+  --surface-2:#FAFAFB;
+  --text:#1C1C1E;
+  --text-2:#52525B;
+  --text-3:#8E8E93;
+  --border:#E5E5EA;
+  --border-strong:#D1D1D6;
+  --accent:#1F4E79;
+  --accent-soft:#E8EEF4;
+  --accent-text:#1F4E79;
+  --kine:#5B6B7A;
+  --kine-soft:#EBEFF3;
+  --renf:#5C6E48;
+  --renf-soft:#EDF0E7;
+  --musc:#1F4E79;
+  --musc-soft:#E8EEF4;
+  --check:#2D5F4A;
+  --check-soft:#E5EFE9;
+  --warn:#A0522D;
+  --warn-soft:#F5EBE2;
+  --shadow:0 1px 2px rgba(28,28,30,.04),0 0 0 1px rgba(28,28,30,.04);
+  --shadow-lift:0 2px 8px rgba(28,28,30,.06),0 0 0 1px rgba(28,28,30,.04);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+
+html{
+  color-scheme:light;
+  -webkit-text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  color:var(--text);
+  background:var(--bg);
+  padding-left:env(safe-area-inset-left);
+  padding-right:env(safe-area-inset-right);
+  padding-bottom:env(safe-area-inset-bottom);
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+
+/* ====== HEADER ====== */
+.header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:calc(env(safe-area-inset-top) + 18px) 18px 14px;
+  position:sticky;top:0;z-index:90;
+}
+.header-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+}
+.brand-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;
+}
+.brand-text h1{
+  font-size:17px;font-weight:700;letter-spacing:-0.02em;color:var(--text);
+}
+.brand-text p{
+  font-size:11px;color:var(--text-3);font-weight:500;letter-spacing:0;
+  margin-top:1px;
+}
+
+.mode-toggle{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:6px 10px 6px 12px;
+  cursor:pointer;
+  min-height:36px;
+  transition:background 150ms ease-out,border-color 150ms ease-out;
+  -webkit-user-select:none;user-select:none;
+}
+.mode-toggle:active{background:var(--bg)}
+.mode-toggle-label{font-size:12px;font-weight:600;color:var(--text-2);letter-spacing:-0.01em}
+.mode-switch{
+  width:32px;height:18px;border-radius:9px;
+  background:var(--border-strong);
+  position:relative;
+  transition:background 150ms ease-out;
+}
+.mode-switch::after{
+  content:"";position:absolute;top:2px;left:2px;
+  width:14px;height:14px;border-radius:50%;
+  background:#fff;
+  transition:transform 180ms ease-out;
+  box-shadow:0 1px 2px rgba(0,0,0,.15);
+}
+body.express-mode .mode-switch{background:var(--accent)}
+body.express-mode .mode-switch::after{transform:translateX(14px)}
+
+.mode-indicator{
+  font-size:11px;color:var(--text-3);font-weight:500;
+  display:flex;align-items:center;gap:6px;
+}
+.mode-indicator-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--text-3);
+}
+body.express-mode .mode-indicator-dot{background:var(--accent)}
+
+/* ====== TABS ====== */
+.tabs-radio{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+.tabs-nav{
+  display:flex;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  gap:2px;
+  margin:0 -2px;
+}
+.tabs-nav::-webkit-scrollbar{display:none}
+.tab-label{
+  flex:0 0 auto;
+  padding:10px 14px;
+  min-height:40px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text-3);
+  cursor:pointer;
+  border-radius:8px;
+  transition:color 150ms ease-out,background 150ms ease-out;
+  white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px;
+  letter-spacing:-0.01em;
+  position:relative;
+}
+.tab-label:active{background:var(--surface-2)}
+.tab-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--check);opacity:0;
+  transition:opacity 150ms ease-out;
+}
+.tab-label.complete .tab-dot{opacity:1}
+
+#tab1:checked~.header .tab-label[for="tab1"],
+#tab2:checked~.header .tab-label[for="tab2"],
+#tab3:checked~.header .tab-label[for="tab3"],
+#tab4:checked~.header .tab-label[for="tab4"],
+#tab5:checked~.header .tab-label[for="tab5"]{
+  color:var(--text);
+  background:var(--surface-2);
+}
+
+.tab-panel{display:none}
+#tab1:checked~main #panel1,
+#tab2:checked~main #panel2,
+#tab3:checked~main #panel3,
+#tab4:checked~main #panel4,
+#tab5:checked~main #panel5{display:block;animation:fadeIn 200ms ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ====== MAIN ====== */
+main{padding:14px 14px 80px;max-width:760px;margin:0 auto}
+
+h2{
+  font-size:22px;font-weight:800;letter-spacing:-0.03em;color:var(--text);
+  margin:8px 0 6px;
+}
+.section-sub{
+  font-size:13px;color:var(--text-3);margin-bottom:16px;font-weight:500;
+}
+h3{
+  font-size:15px;font-weight:700;letter-spacing:-0.02em;color:var(--text);
+  margin:22px 0 10px;
+}
+h4{
+  font-size:13px;font-weight:600;letter-spacing:-0.01em;color:var(--text-2);
+  margin:14px 0 8px;text-transform:uppercase;letter-spacing:0.04em;
+  font-size:11px;
+}
+
+p{font-size:14px;color:var(--text-2);margin-bottom:10px}
+
+/* ====== SAVE BANNER ====== */
+.save-banner{
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;color:var(--text-3);
+  margin:0 0 14px;
+  font-weight:500;
+}
+.save-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--check);
+  animation:savePulse 2.6s ease-in-out infinite;
+}
+@keyframes savePulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ====== INFO BOX ====== */
+.info{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  margin:10px 0 14px;
+  box-shadow:var(--shadow);
+}
+.info-title{
+  font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+  color:var(--text-2);margin-bottom:8px;
+  display:flex;align-items:center;gap:6px;
+}
+.info ul{padding-left:18px;margin:4px 0}
+.info li{font-size:13px;color:var(--text-2);margin-bottom:5px;line-height:1.5}
+.info p{font-size:13px;margin-bottom:6px}
+.info p:last-child{margin-bottom:0}
+.info.warn{background:var(--warn-soft);border-color:#E8D8C8}
+.info.warn .info-title{color:var(--warn)}
+
+/* ====== PROGRESS BAR ====== */
+.progress{
+  display:flex;align-items:center;gap:10px;
+  margin:8px 0 14px;
+  padding:10px 12px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  position:sticky;top:128px;z-index:60;
+  box-shadow:var(--shadow);
+}
+.progress-track{
+  flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:var(--accent);border-radius:3px;
+  transition:width 250ms ease-out;width:0%;
+}
+.progress-text{
+  font-size:12px;font-weight:600;color:var(--text-2);
+  font-variant-numeric:tabular-nums;
+  min-width:36px;text-align:right;
+}
+.progress-reset{
+  background:transparent;border:none;
+  color:var(--text-3);
+  cursor:pointer;
+  padding:4px 6px;
+  border-radius:6px;
+  display:flex;align-items:center;
+}
+.progress-reset:active{background:var(--surface-2)}
+
+/* ====== EXO CARD ====== */
+.exo{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px 12px 12px;
+  margin-bottom:8px;
+  display:flex;gap:12px;align-items:flex-start;
+  cursor:pointer;
+  transition:background 150ms ease-out,border-color 150ms ease-out;
+  -webkit-user-select:none;user-select:none;
+  box-shadow:var(--shadow);
+}
+.exo:active{background:var(--surface-2)}
+
+.exo-check{
+  flex:0 0 24px;width:24px;height:24px;border-radius:50%;
+  border:1.5px solid var(--border-strong);
+  background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  margin-top:1px;
+  transition:background 180ms ease-out,border-color 180ms ease-out,transform 120ms ease-out;
+  position:relative;
+}
+.exo-check svg{opacity:0;transition:opacity 180ms ease-out;width:14px;height:14px;color:#fff}
+.exo.done .exo-check{background:var(--check);border-color:var(--check)}
+.exo.done .exo-check svg{opacity:1}
+.exo.done .exo-name{color:var(--text-3);text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:var(--text-3)}
+.exo.done{background:var(--check-soft);border-color:#CFE0D5}
+
+.exo-body{flex:1;min-width:0}
+.exo-name{
+  font-size:15px;font-weight:700;letter-spacing:-0.02em;color:var(--text);
+  margin-bottom:6px;line-height:1.3;
+  transition:color 200ms ease-out;
+}
+
+.exo-stats{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;
+  border-radius:6px;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  font-size:11px;font-weight:600;
+  color:var(--text-2);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-0.005em;
+}
+.chip svg{width:11px;height:11px;color:var(--text-3)}
+.chip.rpe{background:#FAF5E8;border-color:#E8DBB4;color:#7A6320}
+.chip.rpe svg{color:#7A6320}
+.chip.accent{background:var(--accent-soft);border-color:#D4DEE9;color:var(--accent-text)}
+.chip.accent svg{color:var(--accent-text)}
+
+.exo-notes{
+  font-size:13px;color:var(--text-2);line-height:1.5;margin:0;
+}
+
+/* Color variants */
+.exo.kine{border-left:3px solid var(--kine)}
+.exo.renf{border-left:3px solid var(--renf)}
+.exo.musc{border-left:3px solid var(--musc)}
+
+/* ====== TIMER ====== */
+.timer-row{
+  display:flex;align-items:center;gap:8px;
+  margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);
+}
+.timer-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;
+  border:1px solid var(--border-strong);
+  border-radius:6px;
+  background:var(--surface);
+  font-size:11px;font-weight:600;
+  color:var(--text-2);
+  cursor:pointer;
+  letter-spacing:-0.005em;
+}
+.timer-btn:active{background:var(--surface-2)}
+.timer-btn svg{width:11px;height:11px}
+.timer-display{
+  font-size:13px;font-weight:700;
+  font-variant-numeric:tabular-nums;
+  color:var(--text);
+  letter-spacing:-0.01em;
+  min-width:42px;
+}
+.timer-display.active{color:var(--accent)}
+.timer-display.warn{color:var(--warn)}
+
+/* ====== CHARGE INPUT ====== */
+.charge-row{
+  display:flex;align-items:center;gap:8px;
+  margin-top:8px;
+}
+.charge-row label{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.04em}
+.charge-input{
+  width:60px;
+  padding:4px 8px;
+  border:1px solid var(--border-strong);
+  border-radius:6px;
+  background:var(--surface);
+  font-size:12px;font-weight:600;
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+  text-align:center;
+  -webkit-appearance:none;-moz-appearance:textfield;
+}
+.charge-input::-webkit-inner-spin-button,
+.charge-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.charge-input:focus{outline:none;border-color:var(--accent)}
+.charge-unit{font-size:11px;font-weight:500;color:var(--text-3)}
+
+/* ====== EXPRESS / COMPLET visibility ====== */
+.complet-only{display:block}
+.express-only{display:none}
+body.express-mode .complet-only{display:none}
+body.express-mode .express-only{display:block}
+
+/* ====== PHASE CARD ====== */
+.phase{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  margin:16px 0;
+  box-shadow:var(--shadow);
+}
+.phase-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;
+  border-radius:6px;
+  background:var(--accent-soft);
+  color:var(--accent-text);
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.08em;
+  margin-bottom:6px;
+}
+.phase-title{
+  font-size:17px;font-weight:800;letter-spacing:-0.025em;color:var(--text);
+  margin-bottom:4px;
+}
+.phase-desc{
+  font-size:12px;color:var(--text-2);margin-bottom:10px;
+}
+
+/* ====== WEEK TABLE ====== */
+.week{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;margin:10px 0 16px;box-shadow:var(--shadow);
+}
+.week-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:11px 14px;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.week-row:last-child{border-bottom:none}
+.week-row.head{
+  background:var(--surface-2);
+  font-weight:700;color:var(--text);
+  text-transform:uppercase;font-size:10px;letter-spacing:0.08em;
+  padding:8px 14px;
+}
+.week-day{flex:0 0 36%;font-weight:600;color:var(--text)}
+.week-day small{display:block;font-weight:500;color:var(--text-3);font-size:11px;margin-top:1px}
+.week-content{flex:1;color:var(--text-2)}
+
+/* ====== EXPORT / IMPORT ====== */
+.actions{
+  display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;
+  border:1px solid var(--border-strong);
+  border-radius:8px;
+  background:var(--surface);
+  color:var(--text);
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  letter-spacing:-0.01em;
+  min-height:36px;
+  transition:background 150ms ease-out;
+}
+.btn:active{background:var(--surface-2)}
+.btn svg{width:13px;height:13px}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:active{background:#19405F}
+.btn-danger{color:var(--warn);border-color:#E0CABA}
+.btn-danger:active{background:var(--warn-soft)}
+
+textarea.io-area{
+  width:100%;
+  min-height:90px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:var(--surface);
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;
+  font-size:12px;
+  color:var(--text);
+  resize:vertical;
+  margin:8px 0;
+}
+textarea.io-area:focus{outline:none;border-color:var(--accent)}
+
+/* ====== SECTION HEADER (block intro) ====== */
+.block-head{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;
+  margin:18px 0 10px;
+  border-radius:10px;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.08em;
+}
+.block-head.warm{background:#F0EFE8;color:#5C5841}
+.block-head.kine{background:var(--kine-soft);color:var(--kine)}
+.block-head.renf{background:var(--renf-soft);color:var(--renf)}
+.block-head.musc{background:var(--musc-soft);color:var(--musc)}
+.block-head.cool{background:#EDEBE8;color:#6B5F4E}
+.block-head svg{width:14px;height:14px}
+
+/* ====== TYPO INSIDE INFO ====== */
+.kbd{
+  display:inline-block;padding:1px 5px;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:4px;font-size:11px;font-weight:600;color:var(--text-2);
+  font-family:ui-monospace,"SF Mono",monospace;
+}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:var(--text);color:#fff;
+  padding:10px 16px;border-radius:10px;
+  font-size:13px;font-weight:600;letter-spacing:-0.01em;
+  opacity:0;pointer-events:none;
+  transition:transform 200ms ease-out,opacity 200ms ease-out;
+  z-index:200;
+  box-shadow:0 6px 20px rgba(0,0,0,.18);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (min-width:720px){
+  .header{padding-left:24px;padding-right:24px}
+  main{padding:20px 24px 80px}
+  h2{font-size:26px}
+  .brand-text h1{font-size:18px}
+  .exo-name{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<input type="radio" name="tabs" id="tab1" class="tabs-radio" checked>
+<input type="radio" name="tabs" id="tab2" class="tabs-radio">
+<input type="radio" name="tabs" id="tab3" class="tabs-radio">
+<input type="radio" name="tabs" id="tab4" class="tabs-radio">
+<input type="radio" name="tabs" id="tab5" class="tabs-radio">
+
+<header class="header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 18 L9 12 L13 15 L18 7 L20 7"/>
+          <circle cx="20" cy="7" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Programme</h1>
+        <p>Reprise &middot; 6 semaines</p>
+      </div>
+    </div>
+    <label class="mode-toggle" for="modeToggle" title="Basculer Express / Complet">
+      <span class="mode-toggle-label" id="modeLabel">Complet</span>
+      <span class="mode-switch"></span>
+    </label>
+    <input type="checkbox" id="modeToggle" style="display:none">
+  </div>
+  <div class="mode-indicator" id="modeIndicator">
+    <span class="mode-indicator-dot"></span>
+    <span id="modeText">Mode Complet &middot; séance ~75 min</span>
+  </div>
+  <nav class="tabs-nav" style="margin-top:12px">
+    <label class="tab-label" for="tab1">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Vue d'ensemble
+      <span class="tab-dot" data-tab="1"></span>
+    </label>
+    <label class="tab-label" for="tab2">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6 c2 -1 4 -1 6 1 s4 3 6 2 s2 -3 2 -3"/><path d="M5 18 c2 -1 4 -1 6 1 s4 3 6 2 s2 -3 2 -3"/></svg>
+      Étirements
+      <span class="tab-dot" data-tab="2"></span>
+    </label>
+    <label class="tab-label" for="tab3">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 h4 M16 12 h4 M8 8 v8 M16 8 v8 M11 10 h2 M11 14 h2"/></svg>
+      Genou/hanche
+      <span class="tab-dot" data-tab="3"></span>
+    </label>
+    <label class="tab-label" for="tab4">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 h2 M19 12 h2 M6 9 v6 M18 9 v6 M9 7 v10 M15 7 v10"/></svg>
+      Musculation
+      <span class="tab-dot" data-tab="4"></span>
+    </label>
+    <label class="tab-label" for="tab5">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 L4 5 M4 19 L20 19 M8 16 L8 12 M12 16 L12 8 M16 16 L16 10"/></svg>
+      Suivi
+      <span class="tab-dot" data-tab="5"></span>
+    </label>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ PANEL 1 — VUE D'ENSEMBLE ============ -->
+<section id="panel1" class="tab-panel">
+  <h2>Vue d'ensemble</h2>
+  <p class="section-sub">Reprise progressive + renforcement genou et hanche.</p>
+
+  <div class="save-banner">
+    <span class="save-dot"></span>
+    <span id="saveStatus">Progression enregistrée localement</span>
+  </div>
+
+  <div class="info">
+    <div class="info-title">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+      Trois blocs complémentaires
+    </div>
+    <ul>
+      <li><strong>Bloc A &mdash; Étirements quotidiens.</strong> Tous les jours, ~15 min, même les jours de repos.</li>
+      <li><strong>Bloc B &mdash; Renforcement genou/hanche.</strong> Début de séance ou en autonome. Toujours intégral.</li>
+      <li><strong>Bloc C &mdash; Musculation Full Body.</strong> 3&times;/semaine, 6 semaines, 3 phases progressives.</li>
+    </ul>
+  </div>
+
+  <h3>Principes</h3>
+  <div class="info">
+    <ul>
+      <li>Aucune douleur articulaire pendant ou après. Si douleur : réduire amplitude ou charge.</li>
+      <li>Technique avant charge. Tempo contrôlé prioritaire.</li>
+      <li>Genoux alignés avec la pointe des pieds en flexion.</li>
+      <li>RPE = effort perçu (1&ndash;10). RPE 6 = 4 reps en réserve. RPE 8 = 2 reps.</li>
+      <li>Hydratation et sommeil : leviers de récupération aussi importants que l'entraînement.</li>
+    </ul>
+  </div>
+
+  <h3>Mode Express</h3>
+  <div class="info">
+    <p>Toggle dans le header. <strong>Express</strong> : échauffement et étirements raccourcis (séance ~50 min). <strong>Complet</strong> : version intégrale (~75 min).</p>
+    <p>Le bloc B (renforcement genou) reste <strong>toujours intégral</strong> &mdash; c'est prioritaire médical.</p>
+  </div>
+
+  <h3>Sauvegarde</h3>
+  <div class="info">
+    <p>Tes coches sont enregistrées localement <em>et</em> dans l'URL. Tu peux exporter/importer ta progression depuis l'onglet Suivi.</p>
+  </div>
+</section>
+
+<!-- ============ PANEL 2 — BLOC A ÉTIREMENTS ============ -->
+<section id="panel2" class="tab-panel">
+  <h2>Bloc A &mdash; Étirements</h2>
+  <p class="section-sub">Tous les jours, ~15 min. Idéalement le soir ou après séance.</p>
+
+  <div class="progress" data-session="blocA">
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-text">0/3</div>
+    <button class="progress-reset" onclick="resetSession('blocA')" aria-label="Réinitialiser">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg>
+    </button>
+  </div>
+
+  <div class="block-head kine">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 6 c2 -1 4 -1 6 1 s4 3 6 2"/><path d="M5 18 c2 -1 4 -1 6 1 s4 3 6 2"/></svg>
+    Mobilité quotidienne
+  </div>
+
+  <div data-session="blocA">
+
+    <div class="exo kine" data-exo="A1">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Quadriceps debout</div>
+        <div class="exo-stats">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 1.5"/></svg>45 s</span>
+          <span class="chip">3 × / côté</span>
+        </div>
+        <p class="exo-notes">Main en appui mur ou chaise. Talon vers la fesse, dos droit. Variante : ajouter une légère extension de hanche (genou vers l'arrière).</p>
+        <div class="timer-row" data-timer="45">
+          <button class="timer-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Démarrer 45s</button>
+          <span class="timer-display">00:45</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exo kine" data-exo="A2">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Ischio-jambiers sur marche</div>
+        <div class="exo-stats">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 1.5"/></svg>45 s</span>
+          <span class="chip">3 × / côté</span>
+        </div>
+        <p class="exo-notes">Talon sur marche, genou tendu. Pencher les épaules vers l'avant, dos droit. Si trop facile : monter d'un cran.</p>
+        <div class="timer-row" data-timer="45">
+          <button class="timer-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Démarrer 45s</button>
+          <span class="timer-display">00:45</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exo kine" data-exo="A3">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Mollets contre mur</div>
+        <div class="exo-stats">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 1.5"/></svg>20&ndash;30 s</span>
+          <span class="chip">2 × / côté</span>
+        </div>
+        <p class="exo-notes">Mains au mur, jambe arrière tendue, talon au sol. Variante : fléchir la jambe arrière en gardant le talon au sol (autre faisceau).</p>
+        <div class="timer-row" data-timer="30">
+          <button class="timer-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Démarrer 30s</button>
+          <span class="timer-display">00:30</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info warn">
+    <div class="info-title">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L22 21 H2 Z"/><path d="M12 10v5M12 18h.01"/></svg>
+      Règle d'or
+    </div>
+    <p>Étirement ferme mais supportable, jamais douleur vive. Respiration libre &mdash; ne pas bloquer le souffle.</p>
+  </div>
+</section>
+
+<!-- ============ PANEL 3 — BLOC B GENOU/HANCHE ============ -->
+<section id="panel3" class="tab-panel">
+  <h2>Bloc B &mdash; Genou &amp; hanche</h2>
+  <p class="section-sub">Rééducation et prévention. Toujours intégral, même en mode express.</p>
+
+  <div class="progress" data-session="blocB">
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-text">0/7</div>
+    <button class="progress-reset" onclick="resetSession('blocB')">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg>
+    </button>
+  </div>
+
+  <div class="block-head renf">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12 l3 3 l5 -6"/></svg>
+    B.1 &mdash; Activation &amp; contrôle moteur
+  </div>
+
+  <div data-session="blocB">
+
+    <div class="exo renf" data-exo="B1">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Rond de jambe</div>
+        <div class="exo-stats">
+          <span class="chip">2 × 10 / côté</span>
+          <span class="chip">Repos 30 s</span>
+        </div>
+        <p class="exo-notes">Debout, appui sur une jambe. Grands cercles avec l'autre (avant → côté → arrière). Lent et contrôlé.</p>
+      </div>
+    </div>
+
+    <div class="exo renf" data-exo="B2">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Crabe (élastique au-dessus des genoux)</div>
+        <div class="exo-stats">
+          <span class="chip">3 × 12 pas</span>
+          <span class="chip">Repos 45 s</span>
+          <span class="chip rpe">RPE 6</span>
+        </div>
+        <p class="exo-notes">Élastique juste au-dessus des genoux. Demi-squat puis pas latéraux en gardant la tension. Cible : moyen fessier.</p>
+      </div>
+    </div>
+
+    <div class="exo renf" data-exo="B3">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Flexion de hanche</div>
+        <div class="exo-stats">
+          <span class="chip">3 × 12 / côté</span>
+          <span class="chip">Repos 30 s</span>
+          <span class="chip rpe">RPE 5&ndash;6</span>
+        </div>
+        <p class="exo-notes">Debout, monter le genou à hauteur de hanche, contrôler la descente. Variante : élastique à la cheville.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="block-head renf">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 h4 M16 12 h4 M8 8 v8 M16 8 v8 M11 10 h2 M11 14 h2"/></svg>
+    B.2 &mdash; Quadriceps &amp; fessiers
+  </div>
+
+  <div data-session="blocB" style="margin-top:-8px">
+
+    <div class="exo renf" data-exo="B4">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Chaise contre mur</div>
+        <div class="exo-stats">
+          <span class="chip">2&ndash;3 × 30&ndash;45 s</span>
+          <span class="chip">Repos 1 min</span>
+          <span class="chip rpe">RPE 7</span>
+        </div>
+        <p class="exo-notes">Dos plaqué au mur, genoux à 70° de flexion (90° variante avancée). Gainage isométrique.</p>
+        <div class="timer-row" data-timer="45">
+          <button class="timer-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Démarrer 45s</button>
+          <span class="timer-display">00:45</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exo renf" data-exo="B5">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Fentes</div>
+        <div class="exo-stats">
+          <span class="chip">3 × 10 / côté</span>
+          <span class="chip">Repos 1 min</span>
+          <span class="chip rpe">RPE 6&ndash;7</span>
+        </div>
+        <p class="exo-notes">Dos droit, genou aligné avec le pied. 3 s en bas puis remonter. Si OK : +5 kg haltères.</p>
+        <div class="charge-row">
+          <label>Charge</label>
+          <input type="number" class="charge-input" data-charge="B5" placeholder="0" min="0" step="0.5">
+          <span class="charge-unit">kg</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exo renf" data-exo="B6">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Squat goblet (pieds vers l'extérieur)</div>
+        <div class="exo-stats">
+          <span class="chip">3 × 10</span>
+          <span class="chip">Repos 1 min</span>
+          <span class="chip rpe">RPE 6&ndash;7</span>
+        </div>
+        <p class="exo-notes">Pointes légèrement vers l'ext. Charge <strong>5&ndash;8 kg</strong> (haltère devant la poitrine). 3 s en bas. Si difficile : 1/2 squat.</p>
+        <div class="charge-row">
+          <label>Charge</label>
+          <input type="number" class="charge-input" data-charge="B6" placeholder="5" min="0" step="0.5">
+          <span class="charge-unit">kg</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exo renf" data-exo="B7">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body">
+        <div class="exo-name">Pont (hip thrust au sol)</div>
+        <div class="exo-stats">
+          <span class="chip">3 × 10</span>
+          <span class="chip">Repos 1 min</span>
+          <span class="chip rpe">RPE 6&ndash;7</span>
+        </div>
+        <p class="exo-notes">Allongé, genoux à 90°. Lever bassin à l'inspi, tenir 10&ndash;20 s. Variante : petite charge sur bassin (5&ndash;8 kg).</p>
+        <div class="charge-row">
+          <label>Charge</label>
+          <input type="number" class="charge-input" data-charge="B7" placeholder="0" min="0" step="0.5">
+          <span class="charge-unit">kg</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info">
+    <div class="info-title">Articulation avec la muscu</div>
+    <ul>
+      <li>Jour de séance : Bloc B en début (après échauffement).</li>
+      <li>Jour de repos : Bloc B en autonome, 20 min. Min 3×/sem au total.</li>
+      <li>Bloc A : tous les jours sans exception.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ PANEL 4 — BLOC C MUSCULATION ============ -->
+<section id="panel4" class="tab-panel">
+  <h2>Bloc C &mdash; Musculation</h2>
+  <p class="section-sub">3 séances Full Body / semaine, 6 semaines, 3 phases.</p>
+
+  <!-- ÉCHAUFFEMENT -->
+  <div class="block-head warm">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 c-2 3 -2 6 0 9 c2 3 2 6 0 9"/><path d="M8 7 c-1 2 -1 4 0 6"/><path d="M16 7 c1 2 1 4 0 6"/></svg>
+    Échauffement
+    <span class="complet-only" style="margin-left:auto;font-weight:600;color:var(--text-3);text-transform:none;letter-spacing:0;font-size:11px">~10 min &middot; Complet</span>
+    <span class="express-only" style="margin-left:auto;font-weight:600;color:var(--text-3);text-transform:none;letter-spacing:0;font-size:11px">~5 min &middot; Express</span>
+  </div>
+
+  <div class="progress" data-session="warm">
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-text">0/6</div>
+    <button class="progress-reset" onclick="resetSession('warm')">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg>
+    </button>
+  </div>
+
+  <div data-session="warm">
+    <div class="exo complet-only" data-exo="W1">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body"><div class="exo-name">Cardio léger (vélo / rameur)</div><div class="exo-stats"><span class="chip">5 min</span></div><p class="exo-notes">Allure conversationnelle, montée progressive de la cadence.</p></div>
+    </div>
+    <div class="exo express-only" data-exo="W1e">
+      <div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="exo-body"><div class="exo-name">Cardio léger (express)</div><div class="exo-stats"><span class="chip">2 min</span></div><p class="exo-notes">Mise en route express.</p></div>
+    </div>
+
+    <div class="exo complet-only" data-exo="W2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">90/90 hip switch</div><div class="exo-stats"><span class="chip">2 × 8 / côté</span></div><p class="exo-notes">Mobilité hanche multi-plans.</p></div></div>
+
+    <div class="exo complet-only" data-exo="W3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">World's greatest stretch</div><div class="exo-stats"><span class="chip">2 × 5 / côté</span></div><p class="exo-notes">Mobilité globale hanche / thoracique.</p></div></div>
+    <div class="exo express-only" data-exo="W3e"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Mobilité hanche express</div><div class="exo-stats"><span class="chip">1 × 5 / côté</span></div><p class="exo-notes">90/90 ou greatest stretch, version courte.</p></div></div>
+
+    <div class="exo complet-only" data-exo="W4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Squat à vide tempo lent</div><div class="exo-stats"><span class="chip">2 × 10</span></div><p class="exo-notes">Descente 3 s, remontée 1 s. Réveil moteur du genou.</p></div></div>
+    <div class="exo express-only" data-exo="W4e"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Squat à vide tempo lent</div><div class="exo-stats"><span class="chip">1 × 10</span></div><p class="exo-notes">Réveil moteur du genou, version courte.</p></div></div>
+
+    <div class="exo complet-only" data-exo="W5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Glute bridge</div><div class="exo-stats"><span class="chip">2 × 15</span></div><p class="exo-notes">Activation fessiers.</p></div></div>
+    <div class="exo express-only" data-exo="W5e"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Glute bridge</div><div class="exo-stats"><span class="chip">1 × 15</span></div><p class="exo-notes">Activation fessiers, série unique.</p></div></div>
+
+    <div class="exo complet-only" data-exo="W6"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Bird dog</div><div class="exo-stats"><span class="chip">2 × 8 / côté</span></div><p class="exo-notes">Gainage + coordination.</p></div></div>
+  </div>
+
+  <p style="font-style:italic;color:var(--text-3);font-size:13px;margin:8px 0 4px">→ Enchaîner avec le <strong>Bloc B</strong>, puis la séance principale.</p>
+
+  <!-- PHASE 1 -->
+  <div class="phase">
+    <span class="phase-badge">Phase 1 &middot; S1&ndash;S2</span>
+    <div class="phase-title">Réactivation neuromusculaire</div>
+    <div class="phase-desc">Reconnexion mind-muscle, charges très légères. RPE 5&ndash;6.</div>
+
+    <h4>Séance A &mdash; Lundi</h4>
+    <div class="progress" data-session="P1A"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/5</div><button class="progress-reset" onclick="resetSession('P1A')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P1A">
+      <div class="exo musc" data-exo="P1A1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Goblet squat (pieds vers l'ext.)</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">90 s</span><span class="chip rpe">5&ndash;6</span></div><p class="exo-notes">5&ndash;8 kg. Descente 3 s. Genoux alignés pieds.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1A1" placeholder="5" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1A2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé couché haltères</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">90 s</span><span class="chip rpe">5&ndash;6</span></div><p class="exo-notes">Pause 1 s en bas.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1A2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1A3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Tirage poitrine prise neutre</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">90 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Contraction marquée des dorsaux.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1A3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1A4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Hip thrust barre légère</div><div class="exo-stats"><span class="chip">3 × 15</span><span class="chip">60 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Squeeze 2 s en haut.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1A4" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1A5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Gainage planche</div><div class="exo-stats"><span class="chip">3 × 30 s</span><span class="chip">45 s</span></div><p class="exo-notes">Bassin neutre, pas de cambrure.</p><div class="timer-row" data-timer="30"><button class="timer-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Démarrer 30s</button><span class="timer-display">00:30</span></div></div></div>
+    </div>
+
+    <h4>Séance B &mdash; Mercredi</h4>
+    <div class="progress" data-session="P1B"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/5</div><button class="progress-reset" onclick="resetSession('P1B')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P1B">
+      <div class="exo musc" data-exo="P1B1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">SDT roumain haltères</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">90 s</span><span class="chip rpe">5&ndash;6</span></div><p class="exo-notes">Charges légères, focus technique. Dos plat.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1B1" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1B2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé épaules haltères assis</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">90 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Coudes légèrement avancés.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1B2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1B3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Rowing haltère unilatéral</div><div class="exo-stats"><span class="chip">3 × 12 / côté</span><span class="chip">60 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Coude le long du corps.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1B3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1B4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Fentes marchées poids du corps</div><div class="exo-stats"><span class="chip">3 × 10 / jambe</span><span class="chip">60 s</span><span class="chip rpe">5</span></div><p class="exo-notes">Test tolérance genou. Pas trop longues.</p></div></div>
+      <div class="exo musc" data-exo="P1B5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Crunch + gainage latéral</div><div class="exo-stats"><span class="chip">3 × 12 + 30 s</span><span class="chip">60 s</span></div><p class="exo-notes">Abdos + obliques.</p></div></div>
+    </div>
+
+    <h4>Séance C &mdash; Vendredi/Samedi</h4>
+    <div class="progress" data-session="P1C"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/6</div><button class="progress-reset" onclick="resetSession('P1C')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P1C">
+      <div class="exo musc" data-exo="P1C1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Leg press amplitude progressive</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">90 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Démarrer amplitude partielle, élargir si sans douleur.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1C1" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1C2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé incliné machine</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">90 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Contrôle de la descente.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1C2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1C3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Tirage horizontal câble</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">60 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Buste droit, scapulas en rétraction.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1C3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1C4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Leg curl allongé</div><div class="exo-stats"><span class="chip">3 × 15</span><span class="chip">60 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Ischios. Tempo lent.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1C4" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1C5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Élévations latérales</div><div class="exo-stats"><span class="chip">3 × 15</span><span class="chip">45 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Coudes légèrement fléchis.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1C5" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P1C6"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Mollets debout</div><div class="exo-stats"><span class="chip">3 × 15</span><span class="chip">45 s</span><span class="chip rpe">6</span></div><p class="exo-notes">Amplitude complète.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P1C6" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase">
+    <span class="phase-badge">Phase 2 &middot; S3&ndash;S4</span>
+    <div class="phase-title">Montée progressive du volume</div>
+    <div class="phase-desc">Densification, retour barre. RPE 7. Charges +10 à +20 %.</div>
+
+    <h4>Séance A &mdash; Lundi</h4>
+    <div class="progress" data-session="P2A"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/5</div><button class="progress-reset" onclick="resetSession('P2A')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P2A">
+      <div class="exo musc" data-exo="P2A1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Back squat barre</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">2 min</span><span class="chip rpe">7</span></div><p class="exo-notes">Pieds légèrement vers l'ext. Profondeur tolérée. Contrôle absolu.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2A1" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2A2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé couché barre</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">2 min</span><span class="chip rpe">7</span></div><p class="exo-notes">Pause 1 s à la poitrine sur la 1re série.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2A2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2A3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Tractions assistées / tirage vertical</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">90 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Contraction complète.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2A3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2A4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Hip thrust barre</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">90 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Charge progressive. Pause 2 s en haut.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2A4" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2A5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Gainage planche + latérale</div><div class="exo-stats"><span class="chip">3 × 45 s + 30 s/c</span><span class="chip">60 s</span></div><p class="exo-notes">Bassin neutre.</p></div></div>
+    </div>
+
+    <h4>Séance B &mdash; Mercredi</h4>
+    <div class="progress" data-session="P2B"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/5</div><button class="progress-reset" onclick="resetSession('P2B')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P2B">
+      <div class="exo musc" data-exo="P2B1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">SDT roumain barre</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">2 min</span><span class="chip rpe">7</span></div><p class="exo-notes">Charges modérées. Dos plat, scapulas serrées.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2B1" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2B2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé militaire barre</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">90 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Gainage actif.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2B2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2B3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Rowing barre buste penché</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">90 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Buste à 45°.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2B3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2B4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Fentes haltères</div><div class="exo-stats"><span class="chip">3 × 10 / jambe</span><span class="chip">90 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Charges 8&ndash;12 kg. Genou aligné.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2B4" placeholder="8" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2B5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Relevés de jambes suspendus</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">60 s</span></div><p class="exo-notes">Ou crunch si trop dur.</p></div></div>
+    </div>
+
+    <h4>Séance C &mdash; Vendredi/Samedi</h4>
+    <div class="progress" data-session="P2C"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/6</div><button class="progress-reset" onclick="resetSession('P2C')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P2C">
+      <div class="exo musc" data-exo="P2C1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Leg press amplitude complète</div><div class="exo-stats"><span class="chip">4 × 12</span><span class="chip">2 min</span><span class="chip rpe">7</span></div><p class="exo-notes">Charge nominale retrouvée si tolérance OK.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2C1" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2C2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé incliné haltères</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">90 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Pause 1 s en bas.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2C2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2C3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Tirage horizontal câble prise serrée</div><div class="exo-stats"><span class="chip">4 × 12</span><span class="chip">90 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Pause 1 s contraction.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2C3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2C4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Leg curl allongé</div><div class="exo-stats"><span class="chip">4 × 12</span><span class="chip">60 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Ischios.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2C4" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2C5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Élévations latérales</div><div class="exo-stats"><span class="chip">4 × 12</span><span class="chip">45 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Contrôle.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2C5" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P2C6"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Mollets debout</div><div class="exo-stats"><span class="chip">4 × 15</span><span class="chip">45 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Tempo 2-1-2.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P2C6" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase">
+    <span class="phase-badge">Phase 3 &middot; S5&ndash;S6</span>
+    <div class="phase-title">Retour aux charges de travail</div>
+    <div class="phase-desc">Charges habituelles d'avant arrêt. RPE 7&ndash;8.</div>
+
+    <div class="info">
+      <div class="info-title">Bascule Full Body → Upper/Lower (optionnelle)</div>
+      <p>Si tolérance excellente fin S4 : Lun Lower A &middot; Mar Upper A &middot; Jeu Lower B &middot; Ven Upper B.</p>
+    </div>
+
+    <h4>Séance A &mdash; Lundi</h4>
+    <div class="progress" data-session="P3A"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/5</div><button class="progress-reset" onclick="resetSession('P3A')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P3A">
+      <div class="exo musc" data-exo="P3A1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Back squat barre</div><div class="exo-stats"><span class="chip">4 × 8</span><span class="chip">2&ndash;3 min</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Charge habituelle visée. Profondeur complète si non douloureuse.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3A1" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3A2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé couché barre</div><div class="exo-stats"><span class="chip">4 × 8</span><span class="chip">2 min</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Pause 1 s à la poitrine.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3A2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3A3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Tractions lestées / tirage vertical lourd</div><div class="exo-stats"><span class="chip">4 × 8</span><span class="chip">2 min</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Contraction complète.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3A3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3A4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Hip thrust barre</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">90 s</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Charge nominale.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3A4" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3A5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Gainage chargé</div><div class="exo-stats"><span class="chip">3 × 60 s</span><span class="chip">60 s</span></div><p class="exo-notes">Plate avec poids sur le dos.</p><div class="timer-row" data-timer="60"><button class="timer-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Démarrer 60s</button><span class="timer-display">01:00</span></div></div></div>
+    </div>
+
+    <h4>Séance B &mdash; Mercredi</h4>
+    <div class="progress" data-session="P3B"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/5</div><button class="progress-reset" onclick="resetSession('P3B')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P3B">
+      <div class="exo musc" data-exo="P3B1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Soulevé de terre barre</div><div class="exo-stats"><span class="chip">4 × 6</span><span class="chip">3 min</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Reprise progressive. Charge modérée S5, +10 kg en S6.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3B1" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3B2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé militaire barre</div><div class="exo-stats"><span class="chip">4 × 8</span><span class="chip">2 min</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Gainage actif.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3B2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3B3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Rowing barre</div><div class="exo-stats"><span class="chip">4 × 8</span><span class="chip">2 min</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Buste à 45°.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3B3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3B4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Fentes bulgares</div><div class="exo-stats"><span class="chip">3 × 10 / jambe</span><span class="chip">90 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Pied arrière sur banc. Test tolérance.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3B4" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3B5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Abdos lestés</div><div class="exo-stats"><span class="chip">3 × 12</span><span class="chip">60 s</span></div><p class="exo-notes">Charge progressive.</p></div></div>
+    </div>
+
+    <h4>Séance C &mdash; Vendredi/Samedi</h4>
+    <div class="progress" data-session="P3C"><div class="progress-track"><div class="progress-fill"></div></div><div class="progress-text">0/6</div><button class="progress-reset" onclick="resetSession('P3C')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg></button></div>
+    <div data-session="P3C">
+      <div class="exo musc" data-exo="P3C1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Front squat ou hack squat</div><div class="exo-stats"><span class="chip">4 × 8</span><span class="chip">2 min</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Variante sympa pour le genou.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3C1" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3C2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Développé incliné barre</div><div class="exo-stats"><span class="chip">4 × 8</span><span class="chip">2 min</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Pause 1 s en bas.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3C2" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3C3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Tirage poulie haute prise large</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">90 s</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Contraction complète.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3C3" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3C4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Leg curl + leg extension partielle</div><div class="exo-stats"><span class="chip">3 × 12/12</span><span class="chip">60 s</span><span class="chip rpe">7</span></div><p class="exo-notes">Leg extension uniquement amplitude haute (60°→0°).</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3C4" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3C5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Élévations latérales lourdes</div><div class="exo-stats"><span class="chip">4 × 10</span><span class="chip">45 s</span><span class="chip rpe">8</span></div><p class="exo-notes">Contrôle absolu.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3C5" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+      <div class="exo musc" data-exo="P3C6"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Mollets debout + assis</div><div class="exo-stats"><span class="chip">3 × 15 + 3 × 20</span><span class="chip">45 s</span><span class="chip rpe">7&ndash;8</span></div><p class="exo-notes">Tempo contrôlé.</p><div class="charge-row"><label>Charge</label><input type="number" class="charge-input" data-charge="P3C6" placeholder="0" min="0" step="0.5"><span class="charge-unit">kg</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- RETOUR AU CALME -->
+  <div class="block-head cool">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 c2 -4 6 -4 8 0 s6 4 8 0"/><path d="M4 18 c2 -4 6 -4 8 0 s6 4 8 0"/></svg>
+    Retour au calme
+    <span class="complet-only" style="margin-left:auto;font-weight:600;color:var(--text-3);text-transform:none;letter-spacing:0;font-size:11px">~10 min</span>
+    <span class="express-only" style="margin-left:auto;font-weight:600;color:var(--text-3);text-transform:none;letter-spacing:0;font-size:11px">~5 min</span>
+  </div>
+
+  <div class="progress" data-session="cool">
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-text">0/7</div>
+    <button class="progress-reset" onclick="resetSession('cool')">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 a9 9 0 0 1 15 -6.7 L21 8"/><path d="M21 3 v5 h-5"/></svg>
+    </button>
+  </div>
+
+  <div data-session="cool">
+    <div class="exo complet-only" data-exo="C1"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Quadriceps debout</div><div class="exo-stats"><span class="chip">2 × 30 s / côté</span></div><p class="exo-notes">Main en appui mur. Talon vers la fesse.</p></div></div>
+    <div class="exo express-only" data-exo="C1e"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Quadriceps debout (express)</div><div class="exo-stats"><span class="chip">1 × 30 s / côté</span></div><p class="exo-notes">Version courte.</p></div></div>
+
+    <div class="exo complet-only" data-exo="C2"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Ischio-jambiers</div><div class="exo-stats"><span class="chip">2 × 30 s / côté</span></div><p class="exo-notes">Talon sur marche, dos droit, fléchir hanche.</p></div></div>
+    <div class="exo express-only" data-exo="C2e"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Ischio-jambiers (express)</div><div class="exo-stats"><span class="chip">1 × 30 s / côté</span></div><p class="exo-notes">Version courte.</p></div></div>
+
+    <div class="exo complet-only" data-exo="C3"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Mollets (gastro + soléaire)</div><div class="exo-stats"><span class="chip">2 × 25 s / côté</span></div><p class="exo-notes">Contre le mur, jambe arrière tendue puis fléchie.</p></div></div>
+    <div class="exo express-only" data-exo="C3e"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Mollets (express)</div><div class="exo-stats"><span class="chip">1 × 25 s / côté</span></div><p class="exo-notes">Version courte.</p></div></div>
+
+    <div class="exo complet-only" data-exo="C4"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Psoas (fente basse)</div><div class="exo-stats"><span class="chip">2 × 30 s / côté</span></div><p class="exo-notes">Genou arrière au sol, bassin vers l'avant.</p></div></div>
+
+    <div class="exo complet-only" data-exo="C5"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Fessiers (figure 4 allongée)</div><div class="exo-stats"><span class="chip">2 × 30 s / côté</span></div><p class="exo-notes">Cheville sur genou opposé, tirer la cuisse.</p></div></div>
+
+    <div class="exo complet-only" data-exo="C6"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Bande iliotibiale</div><div class="exo-stats"><span class="chip">2 × 25 s / côté</span></div><p class="exo-notes">Croiser une jambe et incliner buste opposé.</p></div></div>
+
+    <div class="exo complet-only" data-exo="C7"><div class="exo-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="exo-body"><div class="exo-name">Mobilité spécifique genou</div><div class="exo-stats"><span class="chip">2 × 10 cercles / côté</span></div><p class="exo-notes">Assis, jambe tendue : cercles lents du genou et flex/ext active.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ PANEL 5 — SUIVI ============ -->
+<section id="panel5" class="tab-panel">
+  <h2>Suivi</h2>
+  <p class="section-sub">Sauvegarde, règles de progression, signaux d'alerte.</p>
+
+  <h3>Sauvegarde</h3>
+  <div class="info">
+    <p>Tes coches sont enregistrées localement <em>et</em> dans l'URL. Si tu changes d'iPhone ou si le navigateur perd ses données, importe ton code de progression.</p>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="openExport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 v12 M7 8 l5 -5 l5 5 M5 17 v3 a2 2 0 0 0 2 2 h10 a2 2 0 0 0 2 -2 v-3"/></svg>
+        Exporter
+      </button>
+      <button class="btn" onclick="openImport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 V9 M7 16 l5 5 l5 -5 M5 7 V4 a2 2 0 0 1 2 -2 h10 a2 2 0 0 1 2 2 v3"/></svg>
+        Importer
+      </button>
+    </div>
+    <div id="ioPanel" style="display:none">
+      <textarea class="io-area" id="ioText" placeholder="Code de progression"></textarea>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="confirmImport()">Restaurer ce code</button>
+        <button class="btn" onclick="copyExport()">Copier</button>
+        <button class="btn" onclick="closeIO()">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <h3>Règles de progression</h3>
+  <div class="info">
+    <ul>
+      <li>Toutes les séries au RPE indiqué : <strong>+2,5 à +5 kg</strong> la semaine suivante.</li>
+      <li>Une seule série au RPE max : on garde la charge, gagner 1&ndash;2 reps.</li>
+      <li>Douleur articulaire : &minus;20 % de charge, amplitude réduite. Si persiste : retirer + signaler kiné.</li>
+    </ul>
+  </div>
+
+  <h3>Signaux d'alerte (kiné / médecin du sport)</h3>
+  <div class="info warn">
+    <div class="info-title">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L22 21 H2 Z"/><path d="M12 10v5M12 18h.01"/></svg>
+      À consulter rapidement
+    </div>
+    <ul>
+      <li>Douleur articulaire vive pendant l'exercice.</li>
+      <li>Gonflement ou raideur du genou/hanche au réveil.</li>
+      <li>Craquement <strong>douloureux</strong>.</li>
+      <li>Sensation d'instabilité ou dérobement.</li>
+    </ul>
+  </div>
+
+  <h3>Semaine type</h3>
+  <div class="week">
+    <div class="week-row head"><div class="week-day">Jour</div><div class="week-content">Contenu</div></div>
+    <div class="week-row"><div class="week-day">Lundi<small>60&ndash;75 min</small></div><div class="week-content">Échauf. + Bloc B + <strong>Séance A</strong> + Bloc A</div></div>
+    <div class="week-row"><div class="week-day">Mardi<small>15 min</small></div><div class="week-content">Repos actif &mdash; Bloc A (+ Bloc B autonome optionnel)</div></div>
+    <div class="week-row"><div class="week-day">Mercredi<small>60&ndash;75 min</small></div><div class="week-content">Échauf. + Bloc B + <strong>Séance B</strong> + Bloc A</div></div>
+    <div class="week-row"><div class="week-day">Jeudi<small>15 min</small></div><div class="week-content">Repos actif &mdash; Bloc A</div></div>
+    <div class="week-row"><div class="week-day">Ven./Sam.<small>60&ndash;75 min</small></div><div class="week-content">Échauf. + Bloc B + <strong>Séance C</strong> + Bloc A</div></div>
+    <div class="week-row"><div class="week-day">Autres<small>15 min</small></div><div class="week-content">Repos &mdash; Bloc A quotidien</div></div>
+  </div>
+
+  <h3>Réinitialisation</h3>
+  <div class="info">
+    <p>Pour tout effacer (coches + charges) et repartir à zéro :</p>
+    <div class="actions">
+      <button class="btn btn-danger" onclick="resetAll()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6 h18 M8 6 V4 a2 2 0 0 1 2 -2 h4 a2 2 0 0 1 2 2 v2 M19 6 l-1 14 a2 2 0 0 1 -2 2 h-8 a2 2 0 0 1 -2 -2 l-1 -14"/></svg>
+        Tout réinitialiser
+      </button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var STORAGE_KEY="programme_entrainement_v1";
+  var CHARGE_KEY="programme_entrainement_charges_v1";
+  var MODE_KEY="programme_entrainement_mode_v1";
+  var state={};
+  var charges={};
+  var hashTimer=null;
+
+  // ===== STORAGE =====
+  function loadLS(){
+    try{var v=localStorage.getItem(STORAGE_KEY);return v?JSON.parse(v):{}}catch(e){return{}}
+  }
+  function saveLS(){
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){}
+  }
+  function loadCharges(){
+    try{var v=localStorage.getItem(CHARGE_KEY);return v?JSON.parse(v):{}}catch(e){return{}}
+  }
+  function saveCharges(){
+    try{localStorage.setItem(CHARGE_KEY,JSON.stringify(charges))}catch(e){}
+  }
+  function loadMode(){
+    try{return localStorage.getItem(MODE_KEY)==="express"}catch(e){return false}
+  }
+  function saveMode(express){
+    try{localStorage.setItem(MODE_KEY,express?"express":"complet")}catch(e){}
+  }
+
+  // ===== HASH ENCODING (bitfield base64URL) =====
+  function getAllExoIds(){
+    var ids=[];
+    document.querySelectorAll(".exo[data-exo]").forEach(function(el){ids.push(el.dataset.exo)});
+    return ids;
+  }
+  function encodeHash(){
+    var ids=getAllExoIds();
+    var bytes=new Uint8Array(Math.ceil(ids.length/8));
+    for(var i=0;i<ids.length;i++){
+      if(state[ids[i]]){bytes[Math.floor(i/8)]|=(1<<(i%8))}
+    }
+    var bin="";for(var j=0;j<bytes.length;j++)bin+=String.fromCharCode(bytes[j]);
+    var b64=btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+    return b64;
+  }
+  function decodeHash(s){
+    if(!s)return{};
+    try{
+      var b64=s.replace(/-/g,"+").replace(/_/g,"/");
+      while(b64.length%4)b64+="=";
+      var bin=atob(b64);
+      var bytes=new Uint8Array(bin.length);
+      for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+      var ids=getAllExoIds();
+      var r={};
+      for(var k=0;k<ids.length;k++){
+        if(bytes[Math.floor(k/8)]&(1<<(k%8))){r[ids[k]]=true}
+      }
+      return r;
+    }catch(e){return{}}
+  }
+  function writeHash(){
+    if(hashTimer)clearTimeout(hashTimer);
+    hashTimer=setTimeout(function(){
+      try{
+        var h="s="+encodeHash();
+        history.replaceState(null,"","#"+h);
+      }catch(e){}
+    },180);
+  }
+  function readHash(){
+    var h=location.hash.replace(/^#/,"");
+    if(!h)return{};
+    var parts=h.split("&");
+    for(var i=0;i<parts.length;i++){
+      var kv=parts[i].split("=");
+      if(kv[0]==="s")return decodeHash(kv[1]);
+    }
+    return{};
+  }
+
+  // ===== UNION & SYNC =====
+  function unionRestore(){
+    var ls=loadLS();
+    var hs=readHash();
+    var merged={};
+    for(var k in ls)if(ls[k])merged[k]=true;
+    for(var k2 in hs)if(hs[k2])merged[k2]=true;
+    state=merged;
+    saveLS();
+    applyStateToDOM();
+    writeHash();
+  }
+  function applyStateToDOM(){
+    document.querySelectorAll(".exo[data-exo]").forEach(function(el){
+      var id=el.dataset.exo;
+      if(state[id])el.classList.add("done");
+      else el.classList.remove("done");
+    });
+    document.querySelectorAll("input.charge-input[data-charge]").forEach(function(inp){
+      var id=inp.dataset.charge;
+      if(charges[id]!=null&&charges[id]!=="")inp.value=charges[id];
+    });
+    updateAllProgress();
+    updateSaveStatus();
+  }
+
+  // ===== TOGGLE =====
+  function toggleExo(card){
+    var id=card.dataset.exo;if(!id)return;
+    if(state[id]){delete state[id];card.classList.remove("done")}
+    else{state[id]=true;card.classList.add("done");tryVibrate(15)}
+    saveLS();writeHash();
+    updateSessionProgress(card.closest("[data-session]"));
+    updateTabDots();
+    bumpSaveStatus();
+  }
+
+  // ===== PROGRESS =====
+  function updateSessionProgress(sessionDiv){
+    if(!sessionDiv)return;
+    var name=sessionDiv.dataset.session;
+    if(!name)return;
+    // count only visible exos (express/complet)
+    var cards=sessionDiv.querySelectorAll(".exo[data-exo]");
+    var total=0,done=0;
+    cards.forEach(function(c){
+      if(c.offsetParent===null&&getComputedStyle(c).display==="none")return;
+      total++;
+      if(c.classList.contains("done"))done++;
+    });
+    var bar=document.querySelector('.progress[data-session="'+name+'"]');
+    if(bar){
+      var pct=total>0?(done/total)*100:0;
+      bar.querySelector(".progress-fill").style.width=pct+"%";
+      bar.querySelector(".progress-text").textContent=done+"/"+total;
+    }
+  }
+  function updateAllProgress(){
+    document.querySelectorAll(".progress[data-session]").forEach(function(bar){
+      var name=bar.dataset.session;
+      var div=document.querySelector('div[data-session="'+name+'"]:not(.progress)');
+      // there can be multiple "data-session" divs for the same session (e.g. blocB has two)
+      var allDivs=document.querySelectorAll('div[data-session="'+name+'"]:not(.progress)');
+      var total=0,done=0;
+      allDivs.forEach(function(d){
+        d.querySelectorAll(".exo[data-exo]").forEach(function(c){
+          if(c.offsetParent===null&&getComputedStyle(c).display==="none")return;
+          total++;if(c.classList.contains("done"))done++;
+        });
+      });
+      var pct=total>0?(done/total)*100:0;
+      bar.querySelector(".progress-fill").style.width=pct+"%";
+      bar.querySelector(".progress-text").textContent=done+"/"+total;
+    });
+    updateTabDots();
+  }
+  function updateTabDots(){
+    // tab2 = blocA, tab3 = blocB, tab4 = warm+P1A+...+cool, tab5 = none
+    function sessComplete(n){
+      var allDivs=document.querySelectorAll('div[data-session="'+n+'"]:not(.progress)');
+      var total=0,done=0;
+      allDivs.forEach(function(d){
+        d.querySelectorAll(".exo[data-exo]").forEach(function(c){
+          if(c.offsetParent===null&&getComputedStyle(c).display==="none")return;
+          total++;if(c.classList.contains("done"))done++;
+        });
+      });
+      return total>0&&done===total;
+    }
+    document.querySelector('.tab-label[for="tab2"]').classList.toggle("complete",sessComplete("blocA"));
+    document.querySelector('.tab-label[for="tab3"]').classList.toggle("complete",sessComplete("blocB"));
+    var muscSessions=["warm","P1A","P1B","P1C","P2A","P2B","P2C","P3A","P3B","P3C","cool"];
+    var anyComplete=muscSessions.some(sessComplete);
+    document.querySelector('.tab-label[for="tab4"]').classList.toggle("complete",anyComplete);
+  }
+
+  // ===== RESET =====
+  window.resetSession=function(name){
+    if(!confirm("Réinitialiser cette section ?"))return;
+    document.querySelectorAll('div[data-session="'+name+'"]:not(.progress) .exo.done').forEach(function(c){
+      var id=c.dataset.exo;if(id)delete state[id];
+      c.classList.remove("done");
+    });
+    saveLS();writeHash();updateAllProgress();bumpSaveStatus();
+  };
+  window.resetAll=function(){
+    if(!confirm("Tout réinitialiser ? Coches ET charges seront effacées."))return;
+    state={};charges={};
+    try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(CHARGE_KEY)}catch(e){}
+    document.querySelectorAll(".exo.done").forEach(function(c){c.classList.remove("done")});
+    document.querySelectorAll(".charge-input").forEach(function(i){i.value=""});
+    history.replaceState(null,"","#");
+    updateAllProgress();bumpSaveStatus();
+    showToast("Tout effacé");
+  };
+
+  // ===== TIMER =====
+  var activeTimer=null;
+  function startTimer(row){
+    if(activeTimer){clearInterval(activeTimer.interval);activeTimer.display.classList.remove("active","warn");activeTimer.btn.querySelector("svg").outerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>'}
+    var sec=parseInt(row.dataset.timer,10);
+    var remaining=sec;
+    var display=row.querySelector(".timer-display");
+    var btn=row.querySelector(".timer-btn");
+    display.classList.add("active");
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>Stop';
+    function render(){
+      var m=Math.floor(remaining/60),s=remaining%60;
+      display.textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+      if(remaining<=5&&remaining>0)display.classList.add("warn");
+    }
+    render();
+    var interval=setInterval(function(){
+      remaining--;
+      render();
+      if(remaining<=0){
+        clearInterval(interval);
+        display.classList.remove("active","warn");
+        beep();tryVibrate([80,40,80]);
+        btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Recommencer';
+        display.textContent="Terminé";
+        setTimeout(function(){display.textContent=(Math.floor(sec/60)<10?"0":"")+Math.floor(sec/60)+":"+(sec%60<10?"0":"")+(sec%60)},2000);
+        activeTimer=null;
+      }
+    },1000);
+    activeTimer={interval:interval,display:display,btn:btn,row:row};
+  }
+  function stopTimer(row){
+    if(activeTimer&&activeTimer.row===row){
+      clearInterval(activeTimer.interval);
+      activeTimer.display.classList.remove("active","warn");
+      var sec=parseInt(row.dataset.timer,10);
+      activeTimer.display.textContent=(Math.floor(sec/60)<10?"0":"")+Math.floor(sec/60)+":"+(sec%60<10?"0":"")+(sec%60);
+      activeTimer.btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Démarrer '+sec+"s";
+      activeTimer=null;
+    }
+  }
+  function beep(){
+    try{
+      var ctx=new (window.AudioContext||window.webkitAudioContext)();
+      var osc=ctx.createOscillator();
+      var gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=880;
+      gain.gain.setValueAtTime(0,ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.25,ctx.currentTime+0.02);
+      gain.gain.linearRampToValueAtTime(0,ctx.currentTime+0.35);
+      osc.start();osc.stop(ctx.currentTime+0.4);
+    }catch(e){}
+  }
+  function tryVibrate(p){
+    try{if(navigator.vibrate)navigator.vibrate(p)}catch(e){}
+  }
+
+  // ===== EXPORT / IMPORT =====
+  window.openExport=function(){
+    var panel=document.getElementById("ioPanel");
+    var ta=document.getElementById("ioText");
+    ta.value=encodeHash();
+    panel.style.display="block";
+    ta.focus();ta.select();
+  };
+  window.openImport=function(){
+    var panel=document.getElementById("ioPanel");
+    var ta=document.getElementById("ioText");
+    ta.value="";
+    panel.style.display="block";
+    ta.focus();
+  };
+  window.confirmImport=function(){
+    var v=document.getElementById("ioText").value.trim();
+    if(!v){showToast("Aucun code");return}
+    var imported=decodeHash(v);
+    if(!Object.keys(imported).length){showToast("Code invalide");return}
+    for(var k in imported)if(imported[k])state[k]=true;
+    saveLS();writeHash();applyStateToDOM();
+    showToast("Progression importée");
+    closeIO();
+  };
+  window.copyExport=function(){
+    var ta=document.getElementById("ioText");
+    ta.focus();ta.select();
+    try{
+      document.execCommand("copy");
+      showToast("Code copié");
+    }catch(e){showToast("Sélectionne et copie manuellement")}
+  };
+  window.closeIO=function(){
+    document.getElementById("ioPanel").style.display="none";
+  };
+
+  // ===== SAVE STATUS =====
+  var lastSave=Date.now();
+  function bumpSaveStatus(){lastSave=Date.now();updateSaveStatus()}
+  function updateSaveStatus(){
+    var el=document.getElementById("saveStatus");
+    if(!el)return;
+    var diff=Math.floor((Date.now()-lastSave)/1000);
+    var txt;
+    if(diff<3)txt="Enregistré à l'instant";
+    else if(diff<60)txt="Enregistré il y a "+diff+" s";
+    else if(diff<3600)txt="Enregistré il y a "+Math.floor(diff/60)+" min";
+    else txt="Progression enregistrée localement";
+    el.textContent=txt;
+  }
+  setInterval(updateSaveStatus,15000);
+
+  // ===== TOAST =====
+  function showToast(msg){
+    var t=document.getElementById("toast");
+    t.textContent=msg;t.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t=setTimeout(function(){t.classList.remove("show")},1800);
+  }
+
+  // ===== MODE EXPRESS =====
+  function applyMode(express){
+    document.body.classList.toggle("express-mode",express);
+    document.getElementById("modeLabel").textContent=express?"Express":"Complet";
+    document.getElementById("modeText").textContent=express?"Mode Express \u00b7 s\u00e9ance ~50 min":"Mode Complet \u00b7 s\u00e9ance ~75 min";
+    document.getElementById("modeToggle").checked=express;
+    saveMode(express);
+    setTimeout(updateAllProgress,50);
+  }
+
+  // ===== INIT =====
+  function init(){
+    charges=loadCharges();
+    unionRestore();
+    applyMode(loadMode());
+
+    // bind clicks on exo cards
+    document.querySelectorAll(".exo[data-exo]").forEach(function(card){
+      card.addEventListener("click",function(e){
+        if(e.target.closest(".timer-btn")||e.target.closest(".charge-row")||e.target.tagName==="INPUT")return;
+        toggleExo(card);
+      });
+    });
+
+    // bind timers
+    document.querySelectorAll(".timer-row[data-timer]").forEach(function(row){
+      var btn=row.querySelector(".timer-btn");
+      btn.addEventListener("click",function(e){
+        e.stopPropagation();
+        if(activeTimer&&activeTimer.row===row){stopTimer(row)}
+        else{startTimer(row)}
+      });
+    });
+
+    // bind charge inputs
+    document.querySelectorAll("input.charge-input[data-charge]").forEach(function(inp){
+      inp.addEventListener("input",function(){
+        var id=inp.dataset.charge;
+        if(inp.value===""){delete charges[id]}
+        else{charges[id]=inp.value}
+        saveCharges();bumpSaveStatus();
+      });
+      inp.addEventListener("click",function(e){e.stopPropagation()});
+    });
+
+    // bind mode toggle
+    document.querySelector(".mode-toggle").addEventListener("click",function(e){
+      e.preventDefault();
+      var cb=document.getElementById("modeToggle");
+      applyMode(!cb.checked);
+    });
+
+    // resync on visibility / pageshow
+    document.addEventListener("visibilitychange",function(){
+      if(!document.hidden)unionRestore();
+    });
+    window.addEventListener("pageshow",function(e){
+      if(e.persisted)unionRestore();
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",init);
+  }else{
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
